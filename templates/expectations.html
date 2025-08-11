@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Investor Expectations</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            max-width: 400px;
+            margin: 0 auto 3rem;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, var(--primary-gold), #FFD700);
+            border-radius: 2px;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .overview-list {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .overview-list ul {
+            list-style: none;
+        }
+
+        .overview-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+        }
+
+        .overview-list li:last-child {
+            border-bottom: none;
+        }
+
+        .overview-list li::before {
+            content: '📌';
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .overview-list strong {
+            color: var(--primary-gold);
+        }
+
+        .agreements-section {
+            margin: 2rem 0;
+        }
+
+        .agreement-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agreement-item:hover {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .agreement-item.checked {
+            border-color: var(--success);
+            background: rgba(0, 212, 106, 0.05);
+        }
+
+        .checkbox-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            appearance: none;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-user-select: none;
+        }
+
+        input[type="checkbox"]:checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--dark-bg);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .agreement-label {
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), #B8960F);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .content-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .agreement-item {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="security-layer"></div>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <a href="/" style="text-decoration: none;">
+                <div class="logo">AEGOCAP</div>
+            </a>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="content-card">
+            <h2>Investment Overview</h2>
+
+            <div class="overview-list">
+                <ul>
+                    <li><strong>Minimum investment:</strong> $1,000</li>
+                    <li><strong>Payouts:</strong> Monthly dividend distributions</li>
+                    <li><strong>System:</strong> Manual deposit & withdrawal for maximum security</li>
+                    <li><strong>Cycles:</strong> Quarterly deposit periods (3 months)</li>
+                </ul>
+            </div>
+
+            <form method="post" action="/accept-frame" onsubmit="return validateForm(event)">
+                <div class="agreements-section">
+                    <div class="agreement-item" onclick="toggleCheck('agree_1')">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" name="agree_1" id="agree_1" required>
+                        </div>
+                        <label for="agree_1" class="agreement-label">
+                            I understand this is not a smart contract. Deposits are manually verified for security.
+                        </label>
+                    </div>
+
+                    <div class="agreement-item" onclick="toggleCheck('agree_2')">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" name="agree_2" id="agree_2" required>
+                        </div>
+                        <label for="agree_2" class="agreement-label">
+                            I accept the terms of manual payouts. Dividends are distributed monthly to my wallet.
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">I Agree & Continue</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const dt = {open: false};
+            const threshold = 160;
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!dt.open) {
+                        dt.open = true;
+                        window.location.href = '/';
+                    }
+                }
+            }, 500);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        })();
+
+        function toggleCheck(id) {
+            const checkbox = document.getElementById(id);
+            checkbox.checked = !checkbox.checked;
+            updateAgreementStyle(id);
+            checkAllAgreed();
+        }
+
+        function updateAgreementStyle(id) {
+            const checkbox = document.getElementById(id);
+            const item = checkbox.closest('.agreement-item');
+            if (checkbox.checked) {
+                item.classList.add('checked');
+            } else {
+                item.classList.remove('checked');
+            }
+        }
+
+        function checkAllAgreed() {
+            const agree1 = document.getElementById('agree_1').checked;
+            const agree2 = document.getElementById('agree_2').checked;
+            document.getElementById('submitBtn').disabled = !(agree1 && agree2);
+        }
+
+        function validateForm(e) {
+            const agree1 = document.getElementById('agree_1').checked;
+            const agree2 = document.getElementById('agree_2').checked;
+
+            if (!agree1 || !agree2) {
+                e.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        // Prevent checkbox clicks from triggering the parent onclick
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('click', (e) => {
+                e.stopPropagation();
+                updateAgreementStyle(cb.id);
+                checkAllAgreed();
+            });
+        });
+
+        // Initial check
+        checkAllAgreed();
+    </script>
+</body>
+</html>

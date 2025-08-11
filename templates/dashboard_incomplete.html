@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Deposit Pending</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:;">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8960F;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --pending: #4A90E2;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Security Layer */
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(212, 175, 55, 0.01) 2px,
+                rgba(212, 175, 55, 0.01) 4px
+            );
+        }
+
+        /* Background Animation */
+        .blockchain-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .blockchain-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+            animation: blockchainFlow 8s linear infinite;
+        }
+
+        .blockchain-line:nth-child(1) { top: 20%; animation-delay: 0s; }
+        .blockchain-line:nth-child(2) { top: 40%; animation-delay: 2s; }
+        .blockchain-line:nth-child(3) { top: 60%; animation-delay: 4s; }
+        .blockchain-line:nth-child(4) { top: 80%; animation-delay: 6s; }
+
+        @keyframes blockchainFlow {
+            0% { width: 0; left: 0; opacity: 0; }
+            10% { opacity: 1; }
+            50% { width: 100%; left: 0; }
+            90% { opacity: 1; }
+            100% { width: 0; left: 100%; opacity: 0; }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .user-greeting {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .user-email {
+            color: var(--primary-gold);
+            font-weight: 500;
+        }
+
+        /* Status Card */
+        .status-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--pending), var(--primary-gold), var(--pending));
+            border-radius: 24px;
+            opacity: 0.3;
+            animation: borderRotate 3s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+            animation: processing 2s ease-in-out infinite;
+        }
+
+        @keyframes processing {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(1); }
+            75% { transform: rotate(270deg) scale(1.1); }
+        }
+
+        .status-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Progress Indicator */
+        .progress-indicator {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(74, 144, 226, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 16px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--pending), var(--primary-gold));
+            border-radius: 4px;
+            animation: progressPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes progressPulse {
+            0%, 100% { opacity: 0.8; transform: scaleX(0.98); }
+            50% { opacity: 1; transform: scaleX(1); }
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Deposit Info */
+        .deposit-info {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            font-family: 'SF Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--primary-gold);
+            font-weight: 500;
+        }
+
+        /* Timeline */
+        .timeline {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .timeline-item.active {
+            opacity: 1;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 2px solid var(--pending);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .timeline-item.active .timeline-icon {
+            background: var(--pending);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(74, 144, 226, 0); }
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 100px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .status-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .deposit-info {
+                padding: 1.5rem;
+            }
+
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+    <div class="security-layer"></div>
+    <div class="blockchain-bg">
+        <div class="blockchain-line"></div>
+        <div class="blockchain-line"></div>
+        <div class="blockchain-line"></div>
+        <div class="blockchain-line"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/" style="text-decoration: none;">
+                <div class="logo">AEGOCAP</div>
+            </a>
+            <p class="user-greeting">
+                Welcome back, <span class="user-email">{{ email }}</span>
+            </p>
+        </div>
+
+        <!-- Status Card -->
+        <div class="status-card">
+            <div class="status-icon">⏳</div>
+            <h1 class="status-title">Deposit Pending Confirmation</h1>
+            <p class="status-description">
+                We're verifying your deposit on the TRON blockchain. This process typically
+                takes 1-6 hours. You'll receive an email once confirmed.
+            </p>
+
+            <!-- Progress Indicator -->
+            <div class="progress-indicator">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 35%;"></div>
+                </div>
+                <div class="progress-text">
+                    <span>Processing</span>
+                    <span>35%</span>
+                </div>
+            </div>
+
+            <!-- Deposit Info -->
+            {% if deposit_id %}
+            <div class="deposit-info">
+                <div class="info-row">
+                    <span class="info-label">Deposit ID</span>
+                    <span class="info-value">{{ deposit_id }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Amount</span>
+                    <span class="info-value">{{ amount|default('Pending') }} USDT</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Submitted</span>
+                    <span class="info-value">{{ submitted_time|default('Just now') }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Est. Completion</span>
+                    <span class="info-value">{{ est_completion|default('1-6 hours') }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Timeline -->
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon">✓</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Deposit Request Submitted</div>
+                        <div class="timeline-desc">Your deposit details have been recorded</div>
+                    </div>
+                </div>
+                <div class="timeline-item active">
+                    <div class="timeline-icon">⚡</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Blockchain Verification</div>
+                        <div class="timeline-desc">Scanning TRON network for your transaction</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-icon">🔐</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Account Activation</div>
+                        <div class="timeline-desc">Your investment account will be activated</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/vision-frame" class="btn btn-secondary">
+                    <span>🔄</span>
+                    <span>Refresh Status</span>
+                </a>
+                <a href="mailto:support@aegocap.com?subject=Deposit%20Verification%20Query&body=Hello%2C%0A%0AI%20have%20submitted%20a%20deposit%20and%20would%20like%20to%20check%20the%20status.%0A%0ADeposit%20ID%3A%20{{ deposit_id|default('N/A') }}%0ATransaction%20Hash%3A%20{{ tx_hash|default('N/A') }}%0A%0AThank%20you." class="btn btn-secondary">
+                    <span>💬</span>
+                    <span>Contact Support</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Security measures
+        (function() {
+            'use strict';
+
+            // Standard security implementations
+            const devtools = {open: false, orientation: null};
+            const threshold = 160;
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        window.location.href = '/security-breach';
+                    }
+                }
+            }, 500);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        })();
+
+        // Auto-refresh every 30 seconds to check status
+        setInterval(() => {
+            // Simply refresh the page to check verification status
+            window.location.reload();
+        }, 30000);
+
+        // Simulate progress (for demo)
+        let progress = 35;
+        setInterval(() => {
+            if (progress < 95) {
+                progress += Math.random() * 2;
+                document.querySelector('.progress-fill').style.width = progress + '%';
+                document.querySelector('.progress-text span:last-child').textContent = Math.floor(progress) + '%';
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

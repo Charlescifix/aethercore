@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Create Account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --danger: #FF3737;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+        }
+
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .register-logo-icon {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.5));
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .register-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="date"] {
+            width: 100%;
+            padding: 0.875rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.7);
+            cursor: pointer;
+        }
+
+        .password-requirements {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .error-message {
+            background: rgba(255, 55, 55, 0.1);
+            border: 1px solid rgba(255, 55, 55, 0.3);
+            color: var(--danger);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), #B8960F);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .form-footer {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .form-footer a {
+            color: var(--primary-gold);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            opacity: 0.8;
+        }
+
+        .security-note {
+            background: rgba(0, 212, 106, 0.05);
+            border: 1px solid rgba(0, 212, 106, 0.2);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .register-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="security-layer"></div>
+    <div class="bg-animation"></div>
+
+    <div class="container">
+        <div class="logo">
+            <a href="/" style="text-decoration: none;">
+                <div class="register-logo-container">
+                    <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="register-logo-icon">
+                    <h1>AEGOCAP</h1>
+                </div>
+            </a>
+        </div>
+
+        <div class="register-card">
+            <h2>Create Account</h2>
+
+            <div class="security-note">
+                🔒 Your account will be secured with 2FA authentication
+            </div>
+
+            <div class="error-message" id="error-msg"></div>
+
+            <form method="post" action="/pulse-init" onsubmit="return validateForm(event)">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" required placeholder="you@example.com" autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required placeholder="••••••••" autocomplete="new-password">
+                    <div class="password-requirements">Minimum 8 characters with at least 1 number</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" required placeholder="••••••••" autocomplete="new-password">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" name="phone" id="phone" required placeholder="+1 234 567 8900" autocomplete="tel">
+                </div>
+
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" name="dob" id="dob" required max="2007-01-01" autocomplete="bday">
+                </div>
+
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+
+            <div class="form-footer">
+                <a href="/sync-form">Already have an account? Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const dt = {open: false};
+            const threshold = 160;
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!dt.open) {
+                        dt.open = true;
+                        window.location.href = '/';
+                    }
+                }
+            }, 500);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        })();
+
+        function validateForm(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            errorMsg.style.display = 'none';
+
+            if (password !== confirmPassword) {
+                errorMsg.textContent = 'Passwords do not match';
+                errorMsg.style.display = 'block';
+                e.preventDefault();
+                return false;
+            }
+
+            if (password.length < 8 || !/\d/.test(password)) {
+                errorMsg.textContent = 'Password must be at least 8 characters with 1 number';
+                errorMsg.style.display = 'block';
+                e.preventDefault();
+                return false;
+            }
+
+            return true;
+        }
+
+        // Set max date to 18 years ago
+        const today = new Date();
+        const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        document.getElementById('dob').max = maxDate.toISOString().split('T')[0];
+    </script>
+</body>
+</html>

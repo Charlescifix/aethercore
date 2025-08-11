@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Business Model Overview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            max-width: 400px;
+            margin: 0 auto 3rem;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(90deg, var(--primary-gold), #FFD700);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .welcome-email {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .overview-content {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .key-points {
+            display: grid;
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .point-card {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .point-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+
+        .point-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .point-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .point-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .continue-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-gold), #B8960F);
+            color: var(--dark-bg);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin: 2rem auto 0;
+            display: flex;
+            width: fit-content;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .security-note {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .content-card {
+                padding: 2rem 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="security-layer"></div>
+    <div class="bg-pattern"></div>
+
+    <div class="container">
+        <div class="header">
+            <a href="/" style="text-decoration: none;">
+                <div class="logo">AEGOCAP</div>
+            </a>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="content-card">
+            <h2>Welcome, <span class="welcome-email">{{ email }}</span></h2>
+
+            <div class="overview-content">
+                <p style="font-size: 1.1rem; color: var(--text-secondary); line-height: 1.8;">
+                    Our platform enables manual USDT deposits with monthly dividend payouts.<br>
+                    You keep full custody. No browser wallets or contracts.
+                </p>
+            </div>
+
+            <div class="key-points">
+                <div class="point-card">
+                    <div class="point-icon">🔒</div>
+                    <div class="point-title">Full Custody Control</div>
+                    <div class="point-desc">
+                        Your funds remain in your control. No smart contract risks or wallet connections.
+                    </div>
+                </div>
+
+                <div class="point-card">
+                    <div class="point-icon">💰</div>
+                    <div class="point-title">Monthly Dividends</div>
+                    <div class="point-desc">
+                        Receive consistent monthly payouts directly to your wallet address.
+                    </div>
+                </div>
+
+                <div class="point-card">
+                    <div class="point-icon">🛡️</div>
+                    <div class="point-title">Manual Verification</div>
+                    <div class="point-desc">
+                        Every deposit is manually verified on the blockchain for maximum security.
+                    </div>
+                </div>
+            </div>
+
+            <a href="/expectation-frame" class="continue-btn">
+                Continue
+                <span>→</span>
+            </a>
+
+            <div class="security-note">
+                Bank-grade security • No wallet connections • Full transparency
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const dt = {open: false};
+            const threshold = 160;
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!dt.open) {
+                        dt.open = true;
+                        window.location.href = '/';
+                    }
+                }
+            }, 500);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Animate progress on load
+            setTimeout(() => {
+                document.querySelector('.progress-fill').style.width = '25%';
+            }, 100);
+        })();
+    </script>
+</body>
+</html>

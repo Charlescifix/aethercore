@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Deposit Instructions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            max-width: 400px;
+            margin: 0 auto 3rem;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 80%;
+            background: linear-gradient(90deg, var(--primary-gold), #FFD700);
+            border-radius: 2px;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-msg {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-email {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        .security-explanation {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .security-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .security-list {
+            list-style: none;
+        }
+
+        .security-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .security-list li span:first-child {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .deposit-section {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .deposit-instruction {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .wallet-address-container {
+            background: rgba(0, 212, 106, 0.05);
+            border: 2px solid rgba(0, 212, 106, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .wallet-address {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--success);
+            font-family: monospace;
+            word-break: break-all;
+            margin-bottom: 0.5rem;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .address-verify {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .address-verify strong {
+            color: var(--primary-gold);
+            font-family: monospace;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--success);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 212, 106, 0.3);
+        }
+
+        .qr-section {
+            margin: 2rem 0;
+        }
+
+        .qr-wrapper {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .qr-wrapper img {
+            display: block;
+            width: 200px;
+            height: 200px;
+        }
+
+        .qr-instruction {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .continue-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--primary-gold), #B8960F);
+            color: var(--dark-bg);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .warning-note {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #FFA500;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .content-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .wallet-address {
+                font-size: 1rem;
+            }
+
+            .copy-btn {
+                position: static;
+                margin-top: 1rem;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="security-layer"></div>
+
+    <div class="container">
+        <div class="header">
+            <a href="/" style="text-decoration: none;">
+                <div class="logo">AEGOCAP</div>
+            </a>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="content-card">
+            <h2>Send Your Deposit</h2>
+
+            <p class="welcome-msg">
+                Welcome, <span class="welcome-email">{{ email }}</span>
+            </p>
+
+            <div class="security-explanation">
+                <div class="security-title">🔐 Why don't we connect your wallet?</div>
+                <ul class="security-list">
+                    <li>
+                        <span>✅</span>
+                        <span>You remain in full control of your funds.</span>
+                    </li>
+                    <li>
+                        <span>🛡️</span>
+                        <span>Wallet integrations are often targets for phishing or draining attacks.</span>
+                    </li>
+                    <li>
+                        <span>🚫</span>
+                        <span>We do not use smart contracts or bots — everything is manual for maximum security.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="deposit-section">
+                <p class="deposit-instruction">
+                    Please send your selected deposit amount to the following wallet:
+                </p>
+
+                <div class="wallet-address-container">
+                    <div class="wallet-address" id="walletAddress">{{ wallet_address }}</div>
+                    <p class="address-verify">
+                        Make sure the address ends with: <strong>...{{ wallet_address[-4:] }}</strong>
+                    </p>
+                    <button class="copy-btn" onclick="copyAddress()">Copy</button>
+                </div>
+
+                <div class="qr-section">
+                    <div class="qr-wrapper">
+                        <img src="{{ qr_img }}" alt="USDT Wallet QR Code">
+                    </div>
+                    <p class="qr-instruction">Scan the QR code to send USDT</p>
+                </div>
+
+                <div class="warning-note">
+                    ⚠️ Only send USDT on the TRC20 network to this address
+                </div>
+
+                <a href="/confirm-deposit" class="continue-btn">
+                    I've Sent It
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const dt = {open: false};
+            const threshold = 160;
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!dt.open) {
+                        dt.open = true;
+                        window.location.href = '/';
+                    }
+                }
+            }, 500);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        })();
+
+        function copyAddress() {
+            const address = document.getElementById('walletAddress').textContent;
+            navigator.clipboard.writeText(address).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

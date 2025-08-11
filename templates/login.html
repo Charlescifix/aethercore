@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Secure Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --danger: #FF3737;
+            --warning: #FFA500;
+        }
+
+        /* Fix for scrolling issues */
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 1rem 0;
+            min-height: 100vh;
+        }
+
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+        }
+
+        .bg-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, -20px) scale(1.1); }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+            margin: auto;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .login-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-logo-icon {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.5));
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 212, 106, 0.1);
+            border: 1px solid rgba(0, 212, 106, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Alert messages */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(0, 212, 106, 0.1);
+            border: 1px solid rgba(0, 212, 106, 0.3);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(255, 55, 55, 0.1);
+            border: 1px solid rgba(255, 55, 55, 0.3);
+            color: var(--danger);
+        }
+
+        .alert-warning {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            color: var(--warning);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+            touch-action: manipulation;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .otp-info {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Fix submit button */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), #B8960F);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 10;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Loading state */
+        .submit-btn.loading {
+            color: transparent;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid var(--dark-bg);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spinner 0.8s linear infinite;
+        }
+
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        .form-footer {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .form-footer a {
+            color: var(--primary-gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .form-footer a:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1rem;
+            }
+
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Ensure scrollability on small screens */
+        @media (max-height: 700px) {
+            body {
+                align-items: flex-start;
+                padding: 2rem 0;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;">
+    <div class="security-layer"></div>
+    <div class="bg-animation"></div>
+
+    <div class="login-container">
+        <div class="logo">
+            <a href="/" style="text-decoration: none;">
+                <div class="login-logo-container">
+                    <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="login-logo-icon">
+                    <h1>AEGOCAP</h1>
+                </div>
+            </a>
+            <div class="security-badge">
+                <span>🔒</span>
+                <span>Secure Login</span>
+            </div>
+        </div>
+
+        <div class="login-card">
+            <h2 class="form-title">Welcome Back</h2>
+
+            <!-- Alert messages -->
+            <div class="alert alert-error" id="alert-error"></div>
+            <div class="alert alert-success" id="alert-success"></div>
+            <div class="alert alert-warning" id="alert-warning"></div>
+
+            <form id="login-form" action="/pulse-sync" method="post">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" required
+                           placeholder="you@example.com"
+                           autocomplete="email"
+                           spellcheck="false">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required
+                           placeholder="••••••••"
+                           autocomplete="current-password">
+                </div>
+
+                <div class="form-group">
+                    <label for="otp">2FA Code</label>
+                    <div class="otp-info">Enter the 6-digit code from your authenticator app</div>
+                    <input type="text" name="otp" id="otp" required
+                           placeholder="123456"
+                           pattern="[0-9]{6}"
+                           maxlength="6"
+                           autocomplete="off"
+                           inputmode="numeric">
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    Secure Login
+                </button>
+            </form>
+
+            <div class="form-footer">
+                <a href="/retrieve-access">Forgot Password?</a>
+                <span style="margin: 0 1rem; color: var(--text-secondary);">|</span>
+                <a href="/seed-link">Create Account</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Security - prevent dev tools
+        (function() {
+            const dt = {open: false};
+            const threshold = 160;
+            let checkInterval = setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!dt.open) {
+                        dt.open = true;
+                        clearInterval(checkInterval);
+                        window.location.href = '/';
+                    }
+                }
+            }, 500);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Clear console
+            if (typeof console.clear === 'function') {
+                console.clear();
+            }
+        })();
+
+        // Alert management
+        function showAlert(message, type = 'error') {
+            // Hide all alerts
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.display = 'none';
+            });
+
+            const alertElement = document.getElementById(`alert-${type}`);
+            if (alertElement) {
+                alertElement.textContent = message;
+                alertElement.style.display = 'block';
+
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    alertElement.style.opacity = '0';
+                    setTimeout(() => {
+                        alertElement.style.display = 'none';
+                        alertElement.style.opacity = '1';
+                    }, 300);
+                }, 5000);
+            }
+        }
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Show appropriate messages based on URL parameters
+        window.addEventListener('DOMContentLoaded', function() {
+            const otpSetup = getUrlParameter('otp_setup');
+            const sessionExpired = getUrlParameter('session');
+            const errorParam = getUrlParameter('error');
+
+            if (otpSetup === 'success') {
+                showAlert('✅ 2FA setup complete! You can now log in with your credentials.', 'success');
+            } else if (sessionExpired === 'expired') {
+                showAlert('Your session has expired. Please log in again.', 'warning');
+            } else if (errorParam === 'token_expired') {
+                showAlert('Reset link has expired. Please request a new one.', 'error');
+            } else if (errorParam === 'auth_failed') {
+                showAlert('Authentication failed. Please check your credentials and 2FA code.', 'error');
+            } else if (errorParam === 'invalid_otp') {
+                showAlert('Invalid 2FA code. Please check your authenticator app and try again.', 'error');
+            } else if (errorParam === 'server_error') {
+                showAlert('Server error occurred. Please try again or contact support.', 'error');
+            } else if (errorParam) {
+                showAlert('An error occurred. Please try logging in again.', 'error');
+            }
+
+            // Clean URL without reload
+            if (window.history.replaceState) {
+                const cleanUrl = window.location.pathname;
+                window.history.replaceState(null, null, cleanUrl);
+            }
+        });
+
+        // Auto-clean OTP input
+        const otpInput = document.getElementById('otp');
+        otpInput.addEventListener('input', function(e) {
+            // Remove non-digits
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+
+            // Auto-submit if 6 digits entered
+            if (e.target.value.length === 6) {
+                // Optional: auto-submit form
+                // document.getElementById('login-form').submit();
+            }
+        });
+
+        // Prevent paste of non-numeric content in OTP
+        otpInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text');
+            const digits = paste.replace(/[^0-9]/g, '').slice(0, 6);
+            e.target.value = digits;
+        });
+
+        // Simple form validation (no async submission for debugging)
+        const loginForm = document.getElementById('login-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        loginForm.addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const otp = document.getElementById('otp').value.replace(/\s/g, '');
+
+            // Basic validation
+            if (!email || !password || !otp) {
+                e.preventDefault();
+                showAlert('All fields are required', 'error');
+                return false;
+            }
+
+            if (!/^\d{6}$/.test(otp)) {
+                e.preventDefault();
+                showAlert('Please enter a valid 6-digit code', 'error');
+                document.getElementById('otp').focus();
+                return false;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            
+            // Let the form submit normally
+            return true;
+        });
+
+        // Auto-focus email field
+        document.getElementById('email').focus();
+
+        // Enable text selection for input fields
+        ['email', 'password', 'otp'].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('mousedown', function(e) {
+                    e.stopPropagation();
+                });
+                element.addEventListener('selectstart', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - 2FA Setup Complete</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 212, 106, 0.05) 0%, transparent 50%);
+            animation: particleFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-20px, -20px) rotate(120deg); }
+            66% { transform: translate(20px, -10px) rotate(240deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .success-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 212, 106, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+                        inset 0 0 100px rgba(0, 212, 106, 0.05);
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--success), #00A050);
+            position: relative;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .checkmark::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            width: 30px;
+            height: 15px;
+            border: 4px solid white;
+            border-top: none;
+            border-right: none;
+            animation: checkmarkDraw 0.3s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+
+        @keyframes checkmarkDraw {
+            to { opacity: 1; }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--success), var(--primary-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .message {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .highlight {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            min-width: 150px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gold), #B8960F);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        .security-note {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .security-note h3 {
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .security-note ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .security-note li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .security-note li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .success-card {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles"></div>
+
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">
+                <div class="checkmark"></div>
+            </div>
+
+            <h1>Success!</h1>
+
+            <p class="message">
+                Your <span class="highlight">Two-Factor Authentication</span> has been successfully set up for your AEGOCAP account.
+            </p>
+
+            <p class="message">
+                From now on, you'll need to enter a 6-digit code from your authenticator app every time you sign in. This adds an extra layer of security to protect your investments.
+            </p>
+
+            <div class="buttons">
+                <a href="/sync-form" class="btn btn-primary">Sign In Now</a>
+                <a href="/" class="btn btn-secondary">Return Home</a>
+            </div>
+
+            <div class="security-note">
+                <h3>🔒 Security Tips:</h3>
+                <ul>
+                    <li>Keep your authenticator app backup codes safe</li>
+                    <li>Never share your 6-digit codes with anyone</li>
+                    <li>Your 2FA codes refresh every 30 seconds</li>
+                    <li>Contact support if you lose access to your authenticator</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate elements on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const elements = document.querySelectorAll('.success-card > *');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'all 0.5s ease';
+
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>

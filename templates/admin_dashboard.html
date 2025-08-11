@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:;">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8960F;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --warning: #FFA500;
+            --danger: #FF3737;
+            --pending: #4A90E2;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            cursor: default;
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .admin-header-icon {
+            width: 28px;
+            height: 28px;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 55, 55, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 55, 55, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 55, 55, 0.2);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .pending { color: var(--pending); }
+        .verified { color: var(--success); }
+        .rejected { color: var(--danger); }
+
+        .deposits-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .deposits-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .deposits-table th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .deposits-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+        }
+
+        .deposits-table tr:hover {
+            background: rgba(212, 175, 55, 0.02);
+        }
+
+        .email-cell {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--primary-gold);
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .tx-hash {
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-approve {
+            background: rgba(0, 212, 106, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 212, 106, 0.3);
+        }
+
+        .btn-approve:hover {
+            background: rgba(0, 212, 106, 0.2);
+        }
+
+        .btn-reject {
+            background: rgba(255, 55, 55, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 55, 55, 0.3);
+        }
+
+        .btn-reject:hover {
+            background: rgba(255, 55, 55, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .success-alert {
+            background: rgba(0, 212, 106, 0.1);
+            border: 1px solid rgba(0, 212, 106, 0.3);
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .date-cell {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <!-- Header -->
+    <div class="header">
+        <div class="admin-header-logo">
+            <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="admin-header-icon">
+            <div class="logo">AEGOCAP ADMIN</div>
+        </div>
+        <div class="admin-info">
+            <span>👤 {{ admin }}</span>
+            <a href="/admin/logout" class="logout-btn">🚪 Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">🛡️ Admin Dashboard</h1>
+        
+        {% if request.query_params.get('success') == 'approved' %}
+        <div class="success-alert">
+            ✅ Deposit approved successfully!
+        </div>
+        {% endif %}
+        
+        {% if request.query_params.get('success') == 'rejected' %}
+        <div class="success-alert">
+            ❌ Deposit rejected successfully!
+        </div>
+        {% endif %}
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number pending">{{ stats.pending }}</div>
+                <div class="stat-label">Pending Deposits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number verified">{{ stats.verified }}</div>
+                <div class="stat-label">Verified Deposits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number rejected">{{ stats.rejected }}</div>
+                <div class="stat-label">Rejected Deposits</div>
+            </div>
+        </div>
+
+        <!-- Pending Deposits -->
+        <div class="deposits-section">
+            <div class="section-title">
+                <span>⏳</span>
+                <span>Pending Deposit Approvals</span>
+            </div>
+
+            {% if pending_deposits %}
+            <table class="deposits-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Amount</th>
+                        <th>Transaction Hash</th>
+                        <th>Withdrawal Address</th>
+                        <th>Submitted</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for deposit in pending_deposits %}
+                    <tr>
+                        <td class="email-cell">{{ deposit.email }}</td>
+                        <td class="amount-cell">${{ deposit.amount }} USDT</td>
+                        <td class="tx-hash">{{ deposit.tx_hash[:12] }}...{{ deposit.tx_hash[-12:] }}</td>
+                        <td class="tx-hash">{{ deposit.withdrawal_address[:12] }}...{{ deposit.withdrawal_address[-12:] }}</td>
+                        <td class="date-cell">{{ deposit.submitted_at.strftime('%Y-%m-%d %H:%M') if deposit.submitted_at else 'N/A' }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-approve" onclick="showApproveModal({{ deposit.user_id }}, '{{ deposit.email }}', '{{ deposit.amount }}')">
+                                    ✅ Approve
+                                </button>
+                                <button class="btn btn-reject" onclick="showRejectModal({{ deposit.user_id }}, '{{ deposit.email }}')">
+                                    ❌ Reject
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                <p>No pending deposits at this time.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Approve Modal -->
+    <div id="approveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">✅ Approve Deposit</div>
+            <form method="POST" action="/admin/approve-deposit">
+                <input type="hidden" id="approve_user_id" name="user_id">
+                
+                <div class="form-group">
+                    <div class="form-label">User Email</div>
+                    <div id="approve_email" style="color: var(--primary-gold); font-family: monospace;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="verified_amount">Verified Amount (USD)</label>
+                    <input 
+                        type="number" 
+                        id="verified_amount" 
+                        name="verified_amount" 
+                        class="form-input"
+                        step="0.01"
+                        min="0"
+                        required
+                    />
+                </div>
+                
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-cancel" onclick="closeModals()">Cancel</button>
+                    <button type="submit" class="btn btn-approve">✅ Approve Deposit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">❌ Reject Deposit</div>
+            <form method="POST" action="/admin/reject-deposit">
+                <input type="hidden" id="reject_user_id" name="user_id">
+                
+                <div class="form-group">
+                    <div class="form-label">User Email</div>
+                    <div id="reject_email" style="color: var(--primary-gold); font-family: monospace;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="rejection_reason">Rejection Reason</label>
+                    <textarea 
+                        id="rejection_reason" 
+                        name="rejection_reason" 
+                        class="form-input"
+                        rows="3"
+                        placeholder="Please explain why this deposit is being rejected..."
+                        required
+                        style="resize: vertical; -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text;"
+                    ></textarea>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-cancel" onclick="closeModals()">Cancel</button>
+                    <button type="submit" class="btn btn-reject">❌ Reject Deposit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Security
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode == 123 ||
+                (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) ||
+                (e.ctrlKey && e.keyCode == 85)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        function showApproveModal(userId, email, amount) {
+            document.getElementById('approve_user_id').value = userId;
+            document.getElementById('approve_email').textContent = email;
+            document.getElementById('verified_amount').value = amount;
+            document.getElementById('approveModal').style.display = 'flex';
+        }
+
+        function showRejectModal(userId, email) {
+            document.getElementById('reject_user_id').value = userId;
+            document.getElementById('reject_email').textContent = email;
+            document.getElementById('rejectModal').style.display = 'flex';
+        }
+
+        function closeModals() {
+            document.getElementById('approveModal').style.display = 'none';
+            document.getElementById('rejectModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const approveModal = document.getElementById('approveModal');
+            const rejectModal = document.getElementById('rejectModal');
+            if (event.target == approveModal) {
+                approveModal.style.display = 'none';
+            }
+            if (event.target == rejectModal) {
+                rejectModal.style.display = 'none';
+            }
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(function() {
+            window.location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>

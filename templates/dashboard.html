@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP Dashboard - {{ email }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:;">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8960F;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --sidebar-bg: #080808;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --warning: #FFA500;
+            --danger: #FF3737;
+            --pending: #4A90E2;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Security Layer */
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(212, 175, 55, 0.01) 2px,
+                rgba(212, 175, 55, 0.01) 4px
+            );
+        }
+
+        /* Dashboard Layout */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-logo-icon {
+            width: 28px;
+            height: 28px;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-card {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .user-email {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-active {
+            background: var(--success);
+            color: var(--success);
+        }
+
+        /* Navigation */
+        .nav-menu {
+            padding: 2rem 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .nav-item.active {
+            color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary-gold);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            max-width: 1400px;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Status Cards Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .status-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            transform: translate(30px, -30px);
+        }
+
+        .status-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-confirmed {
+            background: rgba(0, 212, 106, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 212, 106, 0.3);
+        }
+
+        .badge-pending {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--pending);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+        }
+
+        .badge-warning {
+            background: rgba(255, 165, 0, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+
+        /* Investment Details */
+        .investment-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detail-value.highlight {
+            color: var(--primary-gold);
+        }
+
+        /* Transaction Info */
+        .transaction-box {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tx-hash {
+            font-family: 'SF Mono', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            color: var(--primary-gold);
+            margin: 0.5rem 0;
+        }
+
+        .copy-btn {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Payout History */
+        .payout-table {
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .payout-table th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .payout-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .payout-table tr:hover {
+            background: rgba(212, 175, 55, 0.02);
+        }
+
+        .payout-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .payout-completed {
+            background: rgba(0, 212, 106, 0.1);
+            color: var(--success);
+        }
+
+        .payout-scheduled {
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--pending);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--dark-bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1000;
+                background: var(--primary-gold);
+                border: none;
+                color: var(--dark-bg);
+                width: 40px;
+                height: 40px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payout-table {
+                font-size: 0.85rem;
+            }
+
+            .payout-table th,
+            .payout-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="security-layer"></div>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/" style="text-decoration: none;">
+                    <div class="sidebar-logo-container">
+                        <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="sidebar-logo-icon">
+                        <div class="logo">AEGOCAP</div>
+                    </div>
+                </a>
+                <div class="user-card">
+                    <div class="user-email">{{ email }}</div>
+                    <div class="user-status status-active">
+                        <span class="status-dot"></span>
+                        <span>Verified Account</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#overview" class="nav-item active">
+                    <span>📊</span>
+                    <span>Overview</span>
+                </a>
+                <a href="/pulse-clear" class="nav-item" style="margin-top: 2rem; color: var(--danger);" onclick="handleLogout()">
+                    <span>🚪</span>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()" style="display: none;">☰</button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Investment Overview</h1>
+                <p class="page-subtitle">Complete investment details and payout information</p>
+            </div>
+
+            <!-- Status Cards -->
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-icon">💎</div>
+                    <div class="status-label">Investment Plan</div>
+                    <div class="status-value">{{ plan|default('Premium Plan') }}</div>
+                    <div class="status-badge badge-confirmed">
+                        <span>●</span>
+                        <span>{{ return_rate|default('5%') }} Monthly Return</span>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">📊</div>
+                    <div class="status-label">Deposit Status</div>
+                    <div class="status-value">Verified</div>
+                    <div class="status-badge badge-confirmed">
+                        <span>✓</span>
+                        <span>Active Since {{ verified_date|default('Jan 21, 2025') }}</span>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">⏱️</div>
+                    <div class="status-label">Investment Duration</div>
+                    <div class="status-value">3 Months</div>
+                    <div class="status-badge badge-warning">
+                        <span>📅</span>
+                        <span>{{ days_remaining|default('75') }} Days Remaining</span>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">💰</div>
+                    <div class="status-label">Next Payout</div>
+                    <div class="status-value">{{ next_payout|default('Apr 21, 2025') }}</div>
+                    <div class="status-badge badge-pending">
+                        <span>⏳</span>
+                        <span>{{ payout_status|default('Scheduled') }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Details Section -->
+            <div class="investment-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>📈</span>
+                        <span>Investment Details</span>
+                    </h2>
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Principal Amount</span>
+                        <span class="detail-value highlight">{{ verified_amount|default('$5,000') }} USDT</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Monthly Return Rate</span>
+                        <span class="detail-value">{{ return_rate|default('5.00%') }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Expected Monthly Payout</span>
+                        <span class="detail-value highlight">{{ monthly_return|default('$75.55') }} USDT</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Total 3-Month Return</span>
+                        <span class="detail-value">{{ monthly_return|default('$75.55') }} USDT × 3</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Investment Start Date</span>
+                        <span class="detail-value">{{ verified_date|default('Jan 21, 2025') }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Maturity Date</span>
+                        <span class="detail-value">Apr 21, 2025</span>
+                    </div>
+                </div>
+
+                <!-- Transaction Info -->
+                <div class="transaction-box">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">
+                        <span>🔗</span>
+                        Transaction Information
+                    </h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Transaction Hash</span>
+                        <div class="tx-hash">{{ tx_hash }}</div>
+                        <button class="copy-btn" onclick="copyToClipboard('{{ tx_hash }}')">Copy Hash</button>
+                    </div>
+                    <div class="detail-item" style="margin-top: 1rem;">
+                        <span class="detail-label">Withdrawal Address</span>
+                        <div class="tx-hash">{{ withdrawal }}</div>
+                        <button class="copy-btn" onclick="copyToClipboard('{{ withdrawal }}')">Copy Address</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payout History Section -->
+            <div class="investment-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span>💸</span>
+                        <span>Payout History</span>
+                    </h2>
+                    <button class="btn btn-secondary" onclick="exportPayoutHistory()">
+                        <span>📥</span>
+                        Export History
+                    </button>
+                </div>
+
+                <table class="payout-table" id="payoutTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Transaction</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ next_payout|default('Apr 21, 2025') }}</td>
+                            <td style="font-weight: 600; color: var(--primary-gold);">${{ monthly_return|default('75.55') }} USDT</td>
+                            <td style="font-family: monospace; font-size: 0.85rem;">Scheduled</td>
+                            <td>
+                                <span class="payout-status payout-scheduled">
+                                    Upcoming
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="window.open('mailto:support@aegocap.com', '_blank')">
+                        <span>❓</span>
+                        Contact Support
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Security measures
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode == 123 ||
+                (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) ||
+                (e.ctrlKey && e.keyCode == 85)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                event.target.textContent = 'Copied!';
+                setTimeout(() => {
+                    event.target.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Auto-logout after 5 minutes of inactivity
+        let inactivityTimer;
+        let lastActivity = Date.now();
+        const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+        function resetInactivityTimer() {
+            lastActivity = Date.now();
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                handleLogout(true);
+            }, INACTIVITY_TIMEOUT);
+        }
+
+        // Track user activity
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+
+        // Start the timer
+        resetInactivityTimer();
+
+        // Logout function
+        function handleLogout(autoLogout = false) {
+            if (autoLogout) {
+                alert('Session expired due to inactivity. You will be logged out.');
+            }
+            
+            // Clear session storage
+            sessionStorage.clear();
+            localStorage.clear();
+            
+            // Redirect to logout endpoint
+            window.location.href = '/pulse-clear';
+        }
+
+        // Export payout history function
+        function exportPayoutHistory() {
+            const table = document.getElementById('payoutTable');
+            const rows = table.querySelectorAll('tr');
+            let csvContent = '';
+            
+            rows.forEach((row, index) => {
+                const cells = row.querySelectorAll(index === 0 ? 'th' : 'td');
+                const rowData = Array.from(cells).map(cell => {
+                    // Clean up the text content
+                    return '"' + cell.textContent.trim().replace(/"/g, '""') + '"';
+                }).join(',');
+                csvContent += rowData + '\n';
+            });
+            
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `payout_history_{{ email|replace('@', '_at_') }}_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Navigation active state
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (this.href.includes('/pulse-clear')) {
+                    e.preventDefault();
+                    handleLogout();
+                } else if (!this.href.includes('http')) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Responsive handling
+        window.addEventListener('resize', () => {
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (window.innerWidth <= 1024) {
+                menuBtn.style.display = 'block';
+            } else {
+                menuBtn.style.display = 'none';
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        });
+
+        // Initial check
+        if (window.innerWidth <= 1024) {
+            document.querySelector('.mobile-menu-btn').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

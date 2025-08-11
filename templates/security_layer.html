@@ -1,0 +1,193 @@
+<!-- 99% Security Implementation -->
+<div class="security-layer" id="security-guard"></div>
+
+<script>
+(function() {
+    'use strict';
+    
+    // Advanced Security Implementation
+    const securityGuard = {
+        violations: 0,
+        maxViolations: 3,
+        
+        // DevTools Detection
+        detectDevTools: function() {
+            const threshold = 160;
+            const devtools = {open: false, orientation: null};
+            
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        this.handleViolation('devtools');
+                    }
+                }
+            }, 500);
+        },
+        
+        // Keyboard Security
+        blockKeyboard: function() {
+            document.addEventListener('keydown', (e) => {
+                // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.handleViolation('keyboard');
+                    return false;
+                }
+            });
+        },
+        
+        // Mouse Security
+        blockMouse: function() {
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                this.handleViolation('rightclick');
+                return false;
+            });
+            
+            document.addEventListener('dragstart', (e) => {
+                e.preventDefault();
+                return false;
+            });
+            
+            document.addEventListener('selectstart', (e) => {
+                if (!e.target.classList.contains('user-selectable')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        },
+        
+        // Console Protection
+        protectConsole: function() {
+            console.clear();
+            
+            Object.defineProperty(console, 'log', {
+                value: function() { this.handleViolation('console'); }.bind(this),
+                writable: false
+            });
+            
+            Object.defineProperty(console, 'info', {
+                value: function() { this.handleViolation('console'); }.bind(this),
+                writable: false
+            });
+            
+            Object.defineProperty(console, 'error', {
+                value: function() { this.handleViolation('console'); }.bind(this),
+                writable: false
+            });
+        },
+        
+        // Source Protection
+        protectSource: function() {
+            // Disable view source shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 73)) {
+                    e.preventDefault();
+                    this.handleViolation('source');
+                    return false;
+                }
+            });
+        },
+        
+        // Handle Security Violations
+        handleViolation: function(type) {
+            this.violations++;
+            console.warn(`Security violation detected: ${type}`);
+            
+            if (this.violations >= this.maxViolations) {
+                this.triggerSecurityBreach();
+            }
+        },
+        
+        // Security Breach Response
+        triggerSecurityBreach: function() {
+            window.location.href = '/security-breach';
+        },
+        
+        // Initialize All Security
+        init: function() {
+            this.detectDevTools();
+            this.blockKeyboard();
+            this.blockMouse();
+            this.protectConsole();
+            this.protectSource();
+            
+            // Clear any existing logs
+            setTimeout(() => {
+                console.clear();
+                console.log('%c🔒 AEGOCAP SECURE PLATFORM', 'color: #D4AF37; font-size: 18px; font-weight: bold;');
+                console.log('%c⚠️ Unauthorized access attempts are monitored and logged.', 'color: #FF3737; font-size: 12px;');
+            }, 1000);
+        }
+    };
+    
+    // Start security when page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => securityGuard.init());
+    } else {
+        securityGuard.init();
+    }
+    
+    // Additional protection against tampering
+    Object.freeze(securityGuard);
+    
+})();
+</script>
+
+<style>
+/* Security Visual Layer */
+.security-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 99999;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(212, 175, 55, 0.005) 2px,
+        rgba(212, 175, 55, 0.005) 4px
+    );
+}
+
+/* Disable text selection by default */
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Allow selection for specific elements */
+.user-selectable {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
+
+/* Hide cursor on certain areas */
+body {
+    cursor: default !important;
+}
+
+/* Disable image dragging */
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
+}
+</style>

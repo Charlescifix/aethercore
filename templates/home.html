@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP | Exclusive AI Investment Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:;">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8960F;
+            --dark-bg: #050505;
+            --secondary-bg: #0A0A0A;
+            --card-bg: #111111;
+            --accent: #1a1a1a;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --danger: #FF3737;
+        }
+
+        html, body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            cursor: default;
+        }
+
+        /* Security Layer */
+        .quantum-shield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(212, 175, 55, 0.01) 2px,
+                rgba(212, 175, 55, 0.01) 4px
+            );
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            background: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 9999;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary-gold) 0%, #FFD700 50%, var(--primary-gold) 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldShimmer 3s ease infinite;
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .logo-shield {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-gold);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: var(--primary-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-gold);
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: 0.02em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn-login {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn-login:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn-member {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--dark-bg);
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-btn-member:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+            background: radial-gradient(ellipse at top, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            animation: securityPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes securityPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+        }
+
+        .security-icon {
+            width: 12px;
+            height: 12px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            font-weight: 400;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-highlight {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 5rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .btn-action {
+            padding: 1.2rem 3rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: 0.02em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--dark-bg);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 6rem 5%;
+            position: relative;
+            background: var(--secondary-bg);
+        }
+
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .service-features li {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .service-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary-gold);
+            font-weight: bold;
+        }
+
+        .service-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-gold);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 100px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .service-action:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateX(5px);
+        }
+
+        /* Academy Section */
+        .academy-section {
+            padding: 6rem 5%;
+            background: linear-gradient(180deg, var(--secondary-bg) 0%, var(--dark-bg) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .academy-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--primary-gold),
+                var(--primary-gold) 1px,
+                transparent 1px,
+                transparent 40px
+            );
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 3rem 5%;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .footer-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-logo-icon {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .footer-security {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .footer-section h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-gold);
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-action {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+    <div class="quantum-shield"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="logo-icon">
+                <div class="logo">AEGOCAP</div>
+            </div>
+            <div class="nav-center">
+                <a href="#who-we-are" class="nav-link">Who We Are</a>
+                <a href="/tokens" class="nav-link">Tokens</a>
+                <a href="#academy" class="nav-link">Academy</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn nav-btn-login" onclick="window.location.href='/sync-form'">
+                    LOG IN
+                </button>
+                <button class="nav-btn nav-btn-member" onclick="window.location.href='/seed-link'">
+                    NEW MEMBER
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="security-badge">
+                <div class="security-icon"></div>
+                MILITARY-GRADE ENCRYPTION
+            </div>
+            <h1>Sovereign Wealth Creation</h1>
+            <p class="hero-subtitle">
+                Access exclusive AI-powered investment strategies.<br>
+                Smart investments in <span class="hero-highlight">AI Companies</span>,
+                <span class="hero-highlight">Stocks</span>, <span class="hero-highlight">Crypto</span>,
+                Precious Metals, Commodities, and Real Estate.
+            </p>
+            <div class="action-buttons">
+                <button class="btn-action btn-primary" onclick="window.location.href='/seed-link'">
+                    Get Started
+                    <span>→</span>
+                </button>
+                <button class="btn-action btn-secondary" onclick="window.location.href='/tokens'">
+                    Buy Token
+                    <span>🪙</span>
+                </button>
+                <button class="btn-action btn-secondary" onclick="window.location.href='/telegram-trader'">
+                    Telegram Trader
+                    <span>📱</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="services-container">
+            <div class="section-header">
+                <h2 class="section-title">Elite Investment Services</h2>
+                <p class="section-subtitle">Institutional-grade tools for the discerning investor</p>
+            </div>
+            <div class="services-grid">
+                <!-- AI Trading Service -->
+                <div class="service-card">
+                    <div class="service-icon">🤖</div>
+                    <h3 class="service-title">AI Quantum Trading</h3>
+                    <p class="service-description">
+                        Next-generation algorithmic trading powered by quantum computing and neural networks.
+                        Our proprietary AI analyzes millions of data points per second.
+                    </p>
+                    <ul class="service-features">
+                        <li>Predictive market analysis</li>
+                        <li>Risk-adjusted portfolio optimization</li>
+                        <li>24/7 autonomous trading</li>
+                    </ul>
+                    <a href="/ai-trading" class="service-action">
+                        Explore AI Trading
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- Precious Metals -->
+                <div class="service-card">
+                    <div class="service-icon">💎</div>
+                    <h3 class="service-title">Digital Gold Vault</h3>
+                    <p class="service-description">
+                        Secure your wealth with tokenized precious metals backed by physical reserves
+                        in Swiss vaults. Full transparency and instant liquidity.
+                    </p>
+                    <ul class="service-features">
+                        <li>Blockchain-verified ownership</li>
+                        <li>Insured physical backing</li>
+                        <li>Instant global transfers</li>
+                    </ul>
+                    <a href="/gold-vault" class="service-action">
+                        Access Vault
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- Real Estate -->
+                <div class="service-card">
+                    <div class="service-icon">🏛️</div>
+                    <h3 class="service-title">Prime Real Estate</h3>
+                    <p class="service-description">
+                        Fractional ownership of luxury properties and commercial real estate
+                        in prime global locations. Earn passive income from day one.
+                    </p>
+                    <ul class="service-features">
+                        <li>Trophy properties worldwide</li>
+                        <li>Monthly dividend payouts</li>
+                        <li>Professional management</li>
+                    </ul>
+                    <a href="/real-estate" class="service-action">
+                        View Properties
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- Crypto Portfolio -->
+                <div class="service-card">
+                    <div class="service-icon">₿</div>
+                    <h3 class="service-title">Crypto Wealth Engine</h3>
+                    <p class="service-description">
+                        Curated cryptocurrency portfolios managed by AI and expert traders.
+                        Access DeFi yields, staking rewards, and emerging blockchain projects.
+                    </p>
+                    <ul class="service-features">
+                        <li>Multi-chain yield optimization</li>
+                        <li>Vetted token launches</li>
+                        <li>Automated rebalancing</li>
+                    </ul>
+                    <a href="/crypto-engine" class="service-action">
+                        Start Earning
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- Private Equity -->
+                <div class="service-card">
+                    <div class="service-icon">🚀</div>
+                    <h3 class="service-title">AI Venture Capital</h3>
+                    <p class="service-description">
+                        Early access to pre-IPO AI companies and breakthrough technologies.
+                        Our network provides exclusive deal flow typically reserved for institutions.
+                    </p>
+                    <ul class="service-features">
+                        <li>Pre-seed AI startups</li>
+                        <li>Due diligence by experts</li>
+                        <li>Portfolio diversification</li>
+                    </ul>
+                    <a href="/venture-capital" class="service-action">
+                        View Opportunities
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- Commodities -->
+                <div class="service-card">
+                    <div class="service-icon">⚡</div>
+                    <h3 class="service-title">Strategic Resources</h3>
+                    <p class="service-description">
+                        Invest in the future of energy and technology through strategic commodity
+                        positions. From lithium to rare earth elements.
+                    </p>
+                    <ul class="service-features">
+                        <li>Battery metals exposure</li>
+                        <li>Agricultural futures</li>
+                        <li>Energy transition plays</li>
+                    </ul>
+                    <a href="/commodities" class="service-action">
+                        Explore Resources
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academy Section -->
+    <section class="academy-section" id="academy">
+        <div class="academy-bg"></div>
+        <div class="services-container">
+            <div class="section-header">
+                <h2 class="section-title">AEGOCAP Academy</h2>
+                <p class="section-subtitle">Master the art and science of algorithmic wealth creation</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3 class="service-title">AI Trading Mastery</h3>
+                    <p class="service-description">
+                        Learn to build and deploy AI trading systems. From neural networks to
+                        quantum algorithms, master the tools shaping finance.
+                    </p>
+                    <a href="/academy/ai-trading" class="service-action">
+                        Start Learning
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🧮</div>
+                    <h3 class="service-title">Financial Datasets & ML</h3>
+                    <p class="service-description">
+                        Work with institutional-grade financial data. Build machine learning models
+                        for market prediction and risk management.
+                    </p>
+                    <a href="/academy/datasets" class="service-action">
+                        Access Datasets
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">⚙️</div>
+                    <h3 class="service-title">Trading Frameworks</h3>
+                    <p class="service-description">
+                        Master professional trading frameworks and modules. Build automated systems
+                        that execute strategies with precision.
+                    </p>
+                    <a href="/academy/frameworks" class="service-action">
+                        View Modules
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo-container">
+                    <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="footer-logo-icon">
+                    <div class="footer-logo">AEGOCAP</div>
+                </div>
+                <p class="footer-desc">
+                    Institutional-grade investment platform powered by artificial intelligence.
+                    Building sovereign wealth for the digital age.
+                </p>
+                <div class="footer-security">
+                    <span>🔒</span>
+                    <span>Bank-Level Security · SOC 2 Compliant</span>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="/sync-form">Member Portal</a></li>
+                    <li><a href="/tokens">AEGO Token</a></li>
+                    <li><a href="/academy">Academy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="/privacy">Privacy</a></li>
+                    <li><a href="/terms">Terms</a></li>
+                    <li><a href="/compliance">Compliance</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 AEGOCAP. All rights reserved. | Singapore · Dubai · Zurich
+        </div>
+    </footer>
+
+    <script>
+        // Advanced Security Implementation
+        (function() {
+            'use strict';
+
+            // Disable developer tools
+            const devtools = {open: false, orientation: null};
+            const threshold = 160;
+            const emitEvent = (state) => {
+                if (state) {
+                    document.body.style.display = 'none';
+                    window.location.href = '/security-breach';
+                }
+            };
+
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        emitEvent(true);
+                        devtools.open = true;
+                    }
+                } else {
+                    if (devtools.open) {
+                        emitEvent(false);
+                        devtools.open = false;
+                    }
+                }
+            }, 500);
+
+            // Disable console
+            Object.defineProperty(console, '_commandLineAPI', { get: () => { throw new Error('Console is disabled'); }});
+
+            // Anti-debugging
+            setInterval(() => {
+                debugger;
+            }, 100);
+
+            // Keyboard shortcuts protection
+            document.addEventListener('keydown', (e) => {
+                // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+
+            // Disable print
+            window.addEventListener('beforeprint', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+
+            // Clear clipboard on copy attempt
+            document.addEventListener('copy', (e) => {
+                e.clipboardData.setData('text/plain', 'Copying is disabled');
+                e.preventDefault();
+            });
+
+            // Obfuscate source
+            const observer = new MutationObserver(() => {
+                document.querySelectorAll('*').forEach(el => {
+                    el.ondragstart = () => false;
+                    el.onselectstart = () => false;
+                    el.oncontextmenu = () => false;
+                });
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+
+            // Session fingerprinting
+            const fingerprint = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.fillText('AEGOCAP', 2, 2);
+                return canvas.toDataURL();
+            };
+
+            sessionStorage.setItem('fp', btoa(fingerprint()));
+
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Parallax effect on scroll
+            let ticking = false;
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelector('.hero-grid');
+                if (parallax) {
+                    parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+                }
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            });
+
+            // Initialize
+            console.clear();
+            console.log('%cSECURITY WARNING', 'color: red; font-size: 30px; font-weight: bold;');
+            console.log('%cThis console is for authorized personnel only.', 'color: red; font-size: 16px;');
+            console.log('%cUnauthorized access will be prosecuted.', 'color: red; font-size: 16px;');
+        })();
+    </script>
+</body>
+</html>

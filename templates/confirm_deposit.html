@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Confirm Deposit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --warning: #FFA500;
+            --danger: #FF3737;
+        }
+
+        /* Anti-screenshot overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 999999;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Disable print */
+        @media print {
+            body { display: none !important; }
+        }
+
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .confirm-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .security-notice {
+            background: rgba(0, 212, 106, 0.05);
+            border: 1px solid rgba(0, 212, 106, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .security-notice strong {
+            color: var(--success);
+        }
+
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .step-badge {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .welcome-msg {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-email {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* Error Messages */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-error {
+            background: rgba(255, 55, 55, 0.1);
+            border: 1px solid rgba(255, 55, 55, 0.3);
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .label-required {
+            color: var(--danger);
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+            text-transform: uppercase;
+        }
+
+        input[type="number"] {
+            text-transform: none;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: none;
+        }
+
+        input:invalid {
+            border-color: var(--danger);
+        }
+
+        input:valid {
+            border-color: var(--success);
+        }
+
+        .validation-indicator {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .validation-indicator.valid {
+            color: var(--success);
+        }
+
+        .validation-indicator.invalid {
+            color: var(--danger);
+        }
+
+        .info-box {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .format-strict {
+            background: rgba(255, 55, 55, 0.05);
+            border: 1px solid rgba(255, 55, 55, 0.2);
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .format-strict strong {
+            color: var(--danger);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), #B8960F);
+            color: var(--dark-bg);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            background: linear-gradient(135deg, #666, #444);
+        }
+
+        .warning-note {
+            background: rgba(255, 165, 0, 0.1);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            color: var(--warning);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .security-footer {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .amount-prefix {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .amount-input-wrapper {
+            position: relative;
+        }
+
+        .amount-input-wrapper input {
+            padding-left: 2.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .confirm-card {
+                padding: 2rem 1.5rem;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+    <div class="security-layer"></div>
+
+    <div class="container">
+        <div class="logo">
+            <a href="/" style="text-decoration: none;">
+                <h1>AEGOCAP</h1>
+            </a>
+        </div>
+
+        <div class="confirm-card">
+            <div class="security-notice">
+                <strong>🔒 Secure Deposit Verification</strong><br>
+                All deposits require manual admin verification before account activation
+            </div>
+
+            <div class="step-indicator">
+                <div class="step-badge">✓</div>
+                <span style="color: var(--text-secondary);">Final Step</span>
+            </div>
+
+            <h2>Confirm Your Deposit</h2>
+
+            <p class="welcome-msg">
+                Account: <span class="welcome-email">{{ email }}</span>
+            </p>
+
+            <!-- Error message container -->
+            <div class="alert alert-error" id="error-msg"></div>
+
+            <form id="deposit-form" method="post" action="/confirm-deposit" autocomplete="off">
+                <div class="form-group">
+                    <label for="deposit_amount">
+                        Deposit Amount (USDT) <span class="label-required">*</span>
+                    </label>
+                    <div class="info-box">
+                        Enter the exact amount you sent. Minimum: ${{ min_amount|default('1000') }} USDT
+                    </div>
+                    <div class="amount-input-wrapper">
+                        <span class="amount-prefix">$</span>
+                        <input
+                            type="number"
+                            name="deposit_amount"
+                            id="deposit_amount"
+                            placeholder="{{ min_amount|default('1000') }}"
+                            required
+                            min="{{ min_amount|default('1000') }}"
+                            step="0.01"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <div class="validation-indicator" id="amount-validation">
+                        <span id="amount-status"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tx_hash">
+                        TRON Transaction Hash <span class="label-required">*</span>
+                    </label>
+                    <div class="info-box">
+                        Your USDT TRC20 transaction ID from TronScan
+                    </div>
+                    <input
+                        type="text"
+                        name="tx_hash"
+                        id="tx_hash"
+                        placeholder="64 character hexadecimal transaction hash"
+                        required
+                        pattern="[a-fA-F0-9]{64}"
+                        minlength="64"
+                        maxlength="64"
+                        spellcheck="false"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        data-validation="TRON transaction hash"
+                    >
+                    <div class="validation-indicator" id="tx-validation">
+                        <span id="tx-status"></span>
+                    </div>
+                    <div class="format-strict">
+                        <strong>Required Format:</strong> Exactly 64 hexadecimal characters (0-9, a-f, A-F)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="withdrawal_address">
+                        TRON Withdrawal Address (TRC20) <span class="label-required">*</span>
+                    </label>
+                    <div class="info-box">
+                        Your TRC20 USDT address for receiving monthly dividends
+                    </div>
+                    <input
+                        type="text"
+                        name="withdrawal_address"
+                        id="withdrawal_address"
+                        placeholder="T... (34 characters)"
+                        required
+                        pattern="T[A-Za-z1-9]{33}"
+                        minlength="34"
+                        maxlength="34"
+                        spellcheck="false"
+                        autocomplete="off"
+                        autocorrect="off"
+                        autocapitalize="off"
+                        data-validation="TRON address"
+                    >
+                    <div class="validation-indicator" id="address-validation">
+                        <span id="address-status"></span>
+                    </div>
+                    <div class="format-strict">
+                        <strong>Required Format:</strong> Must start with 'T' followed by exactly 33 alphanumeric characters
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn" disabled>
+                    Submit for Admin Verification
+                </button>
+            </form>
+
+            <div class="warning-note">
+                ⚠️ <strong>Important:</strong> Your deposit will be manually verified within 1-6 hours.
+                Ensure your transaction is confirmed on the TRON blockchain before submitting.
+            </div>
+
+            <div class="security-footer">
+                🛡️ All deposits are cryptographically verified • Admin Review Required • Blockchain Validated
+            </div>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        // Security: Enhanced protection
+        (function() {
+            const devtools = {open: false};
+            const threshold = 160;
+            let checkInterval;
+
+            const checkDevTools = () => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        document.body.innerHTML = '<h1 style="text-align:center;margin-top:40vh;">Security Violation Detected</h1>';
+                        clearInterval(checkInterval);
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1000);
+                    }
+                }
+            };
+
+            checkInterval = setInterval(checkDevTools, 500);
+
+            // Disable keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Clear console
+            const clearConsole = () => {
+                if (typeof console.clear === 'function') {
+                    console.clear();
+                }
+            };
+            setInterval(clearConsole, 100);
+        })();
+
+        // Form validation
+        const form = document.getElementById('deposit-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const amountInput = document.getElementById('deposit_amount');
+        const txInput = document.getElementById('tx_hash');
+        const addressInput = document.getElementById('withdrawal_address');
+        const errorMsg = document.getElementById('error-msg');
+
+        // Get minimum amount from template
+        const MIN_AMOUNT = parseFloat('{{ min_amount|default("1000") }}');
+
+        // Validation patterns (strict)
+        const TX_PATTERN = /^[a-fA-F0-9]{64}$/;
+        const ADDRESS_PATTERN = /^T[A-Za-z1-9]{33}$/;
+
+        // Amount validation
+        function validateAmount() {
+            const value = parseFloat(amountInput.value);
+            const statusElement = document.getElementById('amount-status');
+            const validationDiv = statusElement.parentElement;
+
+            if (isNaN(value) || value <= 0) {
+                statusElement.textContent = '✗ Invalid amount';
+                validationDiv.className = 'validation-indicator invalid';
+                return false;
+            }
+
+            if (value < MIN_AMOUNT) {
+                statusElement.textContent = `✗ Minimum $${MIN_AMOUNT} USDT required`;
+                validationDiv.className = 'validation-indicator invalid';
+                return false;
+            }
+
+            statusElement.textContent = '✓ Valid amount';
+            validationDiv.className = 'validation-indicator valid';
+            return true;
+        }
+
+        // Real-time validation
+        function validateInput(input, pattern, statusId) {
+            const value = input.value.trim();
+            const statusElement = document.getElementById(statusId);
+            const validationDiv = statusElement.parentElement;
+
+            if (value.length === 0) {
+                statusElement.textContent = '';
+                validationDiv.className = 'validation-indicator';
+                return false;
+            }
+
+            if (pattern.test(value)) {
+                statusElement.textContent = '✓ Valid format';
+                validationDiv.className = 'validation-indicator valid';
+                return true;
+            } else {
+                statusElement.textContent = '✗ Invalid format';
+                validationDiv.className = 'validation-indicator invalid';
+                return false;
+            }
+        }
+
+        // Enable/disable submit button
+        function updateSubmitButton() {
+            const amountValid = validateAmount();
+            const txValid = validateInput(txInput, TX_PATTERN, 'tx-status');
+            const addressValid = validateInput(addressInput, ADDRESS_PATTERN, 'address-status');
+
+            submitBtn.disabled = !(amountValid && txValid && addressValid);
+        }
+
+        // Input event listeners
+        amountInput.addEventListener('input', updateSubmitButton);
+
+        txInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\s/g, '').toUpperCase();
+            updateSubmitButton();
+        });
+
+        addressInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\s/g, '');
+            updateSubmitButton();
+        });
+
+        // Error display
+        function showError(message) {
+            console.log('Showing error:', message);
+            errorMsg.textContent = message;
+            errorMsg.style.display = 'block';
+            errorMsg.style.visibility = 'visible';
+            errorMsg.style.opacity = '1';
+            errorMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Highlight the error for better visibility
+            errorMsg.style.border = '2px solid #ff3737';
+            errorMsg.style.boxShadow = '0 0 10px rgba(255, 55, 55, 0.3)';
+        }
+
+        // Check URL for errors
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+
+            if (error === 'missing_fields') {
+                showError('All fields are required. Please fill out all form fields.');
+            } else if (error === 'invalid_tx') {
+                showError('Invalid transaction hash format. Please enter exactly 64 hexadecimal characters.');
+            } else if (error === 'invalid_address') {
+                showError('Invalid TRON address format. Must start with T and be 34 characters total.');
+            } else if (error === 'invalid_amount') {
+                showError('Invalid deposit amount. Please enter a valid number.');
+            } else if (error === 'below_minimum') {
+                showError(`Deposit amount must be at least $${MIN_AMOUNT} USDT for your selected plan.`);
+            } else if (error === 'duplicate_tx') {
+                showError('This transaction has already been processed.');
+            } else if (error === 'system_error') {
+                showError('System error. Please try again or contact support.');
+            } else if (error) {
+                showError('Validation failed. Please check your input and try again.');
+            }
+
+            // Clean URL
+            if (window.history.replaceState && error) {
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const amount = parseFloat(amountInput.value);
+            const txValue = txInput.value.trim();
+            const addressValue = addressInput.value.trim();
+
+            // Final validation
+            if (amount < MIN_AMOUNT) {
+                showError(`Minimum deposit amount is $${MIN_AMOUNT} USDT.`);
+                return false;
+            }
+
+            if (!TX_PATTERN.test(txValue)) {
+                showError('Transaction hash must be exactly 64 hexadecimal characters.');
+                return false;
+            }
+
+            if (!ADDRESS_PATTERN.test(addressValue)) {
+                showError('Address must be a valid TRON address (starts with T, 34 characters).');
+                return false;
+            }
+
+            // Disable submit button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+            
+            // Don't disable form inputs - they need to be enabled for form submission
+            // Instead make them readonly to prevent changes during submission
+            amountInput.readOnly = true;
+            txInput.readOnly = true;
+            addressInput.readOnly = true;
+
+            // Submit form
+            form.submit();
+        });
+
+        // Enable text selection only for inputs
+        [amountInput, txInput, addressInput].forEach(input => {
+            input.addEventListener('mousedown', e => e.stopPropagation());
+            input.addEventListener('selectstart', e => e.stopPropagation());
+        });
+    </script>
+</body>
+</html>

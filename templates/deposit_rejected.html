@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP - Deposit Verification Failed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:;">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8960F;
+            --dark-bg: #050505;
+            --card-bg: #0A0A0A;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --danger: #FF3737;
+            --warning: #FFA500;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Security Layer */
+        .security-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(212, 175, 55, 0.01) 2px,
+                rgba(212, 175, 55, 0.01) 4px
+            );
+        }
+
+        /* Background Animation */
+        .warning-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .warning-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--danger), transparent);
+            animation: warningFlow 6s linear infinite;
+        }
+
+        .warning-line:nth-child(1) { top: 25%; animation-delay: 0s; }
+        .warning-line:nth-child(2) { top: 50%; animation-delay: 2s; }
+        .warning-line:nth-child(3) { top: 75%; animation-delay: 4s; }
+
+        @keyframes warningFlow {
+            0% { width: 0; left: 0; opacity: 0; }
+            10% { opacity: 0.3; }
+            50% { width: 100%; left: 0; }
+            90% { opacity: 0.3; }
+            100% { width: 0; left: 100%; opacity: 0; }
+        }
+
+        /* Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .user-greeting {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .user-email {
+            color: var(--primary-gold);
+            font-weight: 500;
+        }
+
+        /* Rejection Card */
+        .reject-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 55, 55, 0.3);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(255, 55, 55, 0.1);
+        }
+
+        .reject-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--danger), var(--warning), var(--danger));
+            border-radius: 24px;
+            opacity: 0.3;
+            animation: borderPulse 3s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes borderPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.02); }
+        }
+
+        .reject-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+            animation: shake 1s ease-in-out infinite;
+            color: var(--danger);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .reject-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--danger);
+            background: linear-gradient(180deg, var(--danger) 0%, #cc3333 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .reject-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Reason Box */
+        .reason-box {
+            background: rgba(255, 55, 55, 0.05);
+            border: 1px solid rgba(255, 55, 55, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .reason-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+
+        .reason-content {
+            color: var(--warning);
+            font-size: 1rem;
+            line-height: 1.6;
+            background: rgba(255, 165, 0, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--warning);
+        }
+
+        /* Support Info */
+        .support-section {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .support-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .support-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .support-item:last-child {
+            border-bottom: none;
+        }
+
+        .support-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .support-value {
+            font-family: 'SF Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--primary-gold);
+            font-weight: 500;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+
+        .support-email {
+            color: var(--primary-gold);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .support-email:hover {
+            opacity: 0.8;
+        }
+
+        /* Next Steps */
+        .next-steps {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            text-align: left;
+        }
+
+        .steps-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .steps-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .steps-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .step-number {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--dark-bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-gold);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .reject-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .support-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+    <div class="security-layer"></div>
+    <div class="warning-bg">
+        <div class="warning-line"></div>
+        <div class="warning-line"></div>
+        <div class="warning-line"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="/" style="text-decoration: none;">
+                <div class="logo">AEGOCAP</div>
+            </a>
+            <p class="user-greeting">
+                Account: <span class="user-email">{{ email }}</span>
+            </p>
+        </div>
+
+        <!-- Rejection Card -->
+        <div class="reject-card">
+            <div class="reject-icon">⚠️</div>
+            <h1 class="reject-title">Deposit Verification Failed</h1>
+            <p class="reject-description">
+                We were unable to verify your deposit transaction on the TRON blockchain.
+                Your account remains secure and no funds have been processed.
+            </p>
+
+            <!-- Reason Box -->
+            <div class="reason-box">
+                <div class="reason-title">
+                    <span>🔍</span>
+                    <span>Verification Issue</span>
+                </div>
+                <div class="reason-content">
+                    {{ reason|default('The transaction could not be verified on the blockchain. Please ensure the transaction is confirmed and the details are correct.') }}
+                </div>
+            </div>
+
+            <!-- Support Information -->
+            <div class="support-section">
+                <div class="support-title">
+                    <span>🛟</span>
+                    <span>Support Information</span>
+                </div>
+                <div class="support-item">
+                    <span class="support-label">Support Email</span>
+                    <a href="mailto:{{ support_email|default('support@aegocap.com') }}?subject=Deposit%20Verification%20Issue&body=Hello%2C%0A%0AMy%20deposit%20was%20rejected%20and%20I%20need%20assistance.%0A%0AAccount%3A%20{{ email }}%0AReason%3A%20{{ reason|default('N/A') }}%0A%0APlease%20help%20me%20resolve%20this%20issue.%0A%0AThank%20you." class="support-value support-email">{{ support_email|default('support@aegocap.com') }}</a>
+                </div>
+                <div class="support-item">
+                    <span class="support-label">Account Reference</span>
+                    <span class="support-value">{{ email }}</span>
+                </div>
+                <div class="support-item">
+                    <span class="support-label">Case ID</span>
+                    <span class="support-value">REJ-{{ email[:8]|upper }}-{{ timestamp|default('2025') }}</span>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <div class="steps-title">What to do next:</div>
+                <ul class="steps-list">
+                    <li>
+                        <span class="step-number">1</span>
+                        <span class="step-text">Contact our support team using the email above with your transaction details</span>
+                    </li>
+                    <li>
+                        <span class="step-number">2</span>
+                        <span class="step-text">Verify your transaction is confirmed on TronScan and meets the minimum requirements</span>
+                    </li>
+                    <li>
+                        <span class="step-number">3</span>
+                        <span class="step-text">Our team will review your case and provide guidance within 24 hours</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="action-buttons">
+                <a href="mailto:{{ support_email|default('support@aegocap.com') }}?subject=Deposit%20Verification%20Issue&body=Hello%2C%0A%0AMy%20deposit%20was%20rejected%20and%20I%20need%20assistance.%0A%0AAccount%3A%20{{ email }}%0AReason%3A%20{{ reason|default('N/A') }}%0A%0APlease%20help%20me%20resolve%20this%20issue.%0A%0AThank%20you." class="btn btn-primary">
+                    <span>📧</span>
+                    <span>Contact Support</span>
+                </a>
+                <a href="/" class="btn btn-secondary">
+                    <span>🏠</span>
+                    <span>Return Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Security measures
+        (function() {
+            'use strict';
+
+            // Standard security implementations
+            const devtools = {open: false, orientation: null};
+            const threshold = 160;
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        window.location.href = '/security-breach';
+                    }
+                }
+            }, 500);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Clear console
+            console.clear();
+            console.log('%cDEPOSIT VERIFICATION FAILED', 'color: #FF3737; font-size: 20px; font-weight: bold;');
+            console.log('%cContact support for assistance.', 'color: #FFA500; font-size: 14px;');
+        })();
+
+        // Enable text selection for support values
+        document.querySelectorAll('.support-value').forEach(element => {
+            element.addEventListener('mousedown', function(e) {
+                e.stopPropagation();
+            });
+            element.addEventListener('selectstart', function(e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+</body>
+</html>

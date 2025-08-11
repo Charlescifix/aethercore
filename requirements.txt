@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+python-dotenv
+email-validator
+passlib[bcrypt]
+itsdangerous
+pyotp
+qrcode[pil]
+httpx
+sqlalchemy==2.0.30
+psycopg2-binary
+asyncpg
+aiofiles
+starlette
