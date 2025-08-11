@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who We Are | AEGOCAP - Elite Investment Circle</title>
+    <link rel="icon" type="image/x-icon" href="/static/aegocap-logo.png">
+    <style>
+        /* Elite color palette and variables */
+        :root {
+            --primary-bg: #0a0f1c;
+            --secondary-bg: #1a1f2e;
+            --card-bg: rgba(26, 31, 46, 0.8);
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8941F;
+            --accent-gold: #FFE55C;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B8C5D6;
+            --text-muted: #8A96A8;
+            --border-gold: rgba(212, 175, 55, 0.2);
+            --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #FFE55C 50%, #B8941F 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background Grid Animation */
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            background-image: 
+                linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(25px, 25px); }
+        }
+
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 15, 28, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-gold);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--gradient-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-bg);
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-gold);
+        }
+
+        .nav-link.active {
+            color: var(--primary-gold);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-gold);
+            border-radius: 1px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 80px;
+            position: relative;
+            background: radial-gradient(ellipse at top, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .exclusive-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border-gold);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .exclusive-icon {
+            width: 16px;
+            height: 16px;
+            background: var(--gradient-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--primary-bg);
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 5vw, 5rem);
+            font-weight: 800;
+            background: var(--gradient-gold);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        /* Supporting Image */
+        .hero-image {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 148, 31, 0.1) 100%);
+            z-index: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: sepia(10%) saturate(120%) brightness(1.1);
+        }
+
+        /* Vision Statement */
+        .vision-section {
+            padding: 80px 0;
+            background: var(--secondary-bg);
+            position: relative;
+        }
+
+        .vision-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .vision-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 24px;
+            padding: 4rem;
+            backdrop-filter: blur(20px);
+            text-align: center;
+        }
+
+        .vision-quote {
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .vision-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Core Business Section */
+        .core-business {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .business-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 5rem;
+        }
+
+        .business-content h3 {
+            font-size: 2rem;
+            color: var(--primary-gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .business-text {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .revenue-split {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .revenue-item {
+            flex: 1;
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .revenue-percentage {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .revenue-source {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ai-visual {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(212, 175, 55, 0); }
+        }
+
+        /* Services Grid */
+        .services-section {
+            padding: 100px 0;
+            background: var(--secondary-bg);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.1);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Invitation CTA */
+        .invitation-section {
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .invitation-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-gold);
+            border-radius: 24px;
+            padding: 4rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .invitation-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .invitation-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+
+        .exclusive-contact {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2.5rem;
+            background: var(--gradient-gold);
+            color: var(--primary-bg);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .exclusive-contact:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .business-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .revenue-split {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 100px 0 60px;
+            }
+
+            .vision-content,
+            .invitation-card {
+                padding: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+    
+    <!-- Navigation -->
+    <nav class="navigation">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">A</div>
+                AEGOCAP
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/who-we-are" class="nav-link active">Who We Are</a></li>
+                <li><a href="/tokens" class="nav-link">Token</a></li>
+                <li><a href="/sync-form" class="nav-link">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="exclusive-badge">
+                <div class="exclusive-icon">◆</div>
+                Invitation Only
+            </div>
+            <h1>The Inner Circle</h1>
+            <p class="hero-subtitle">
+                We are a small group of wise men who have come together to preserve and expand our wealth through strategic AI innovation, sophisticated trading algorithms, and global investment opportunities.
+            </p>
+            
+            <!-- Supporting Image -->
+            <div class="hero-image">
+                <img src="data:image/svg+xml,%3Csvg width='600' height='400' viewBox='0 0 600 400' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='600' height='400' fill='%23141828'/%3E%3Cg opacity='0.6'%3E%3Cpath d='M100 200L150 150L200 180L250 120L300 160L350 100L400 140L450 80L500 120' stroke='%23D4AF37' stroke-width='3' fill='none'/%3E%3C/g%3E%3Cg opacity='0.8'%3E%3Ccircle cx='150' cy='150' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='200' cy='180' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='250' cy='120' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='300' cy='160' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='350' cy='100' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='400' cy='140' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='450' cy='80' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='500' cy='120' r='4' fill='%23D4AF37'/%3E%3C/g%3E%3Ctext x='50' y='350' fill='%23B8C5D6' font-family='Inter' font-size='14' opacity='0.7'%3EGlobal AI Trading Performance%3C/text%3E%3Ctext x='450' y='350' fill='%23D4AF37' font-family='Inter' font-size='16' font-weight='600'%3E+247% ROI%3C/text%3E%3C/svg%3E" alt="Elite AI Trading Performance Chart">
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Statement -->
+    <section class="vision-section">
+        <div class="vision-container">
+            <div class="vision-content">
+                <div class="vision-quote">
+                    "Wisdom is not just knowing what to do, but knowing when to do it."
+                </div>
+                <div class="vision-text">
+                    Our exclusive collective represents the convergence of traditional wisdom and cutting-edge technology. We leverage decades of market experience with revolutionary AI capabilities to create unprecedented opportunities for wealth preservation and growth. Membership is by invitation only, ensuring our circle remains intimate and our strategies remain effective.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Business -->
+    <section class="core-business">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Our Business Portfolio</h2>
+                <p class="section-subtitle">Diversified AI-powered ventures generating sustainable returns</p>
+            </div>
+            
+            <div class="business-grid">
+                <div class="business-content">
+                    <h3>AI Innovation Empire</h3>
+                    <p class="business-text">
+                        We own and operate multiple AI companies with a huge team that builds and scales different AI solutions. From machine learning algorithms to autonomous trading systems, our portfolio spans the entire AI spectrum.
+                    </p>
+                    <div class="revenue-split">
+                        <div class="revenue-item">
+                            <div class="revenue-percentage">50%</div>
+                            <div class="revenue-source">AI Trading & ML Models</div>
+                        </div>
+                        <div class="revenue-item">
+                            <div class="revenue-percentage">50%</div>
+                            <div class="revenue-source">Real World Diversification</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-visual">
+                    <div class="ai-icon">🧠</div>
+                    <h4 style="color: var(--primary-gold); font-size: 1.5rem; margin-bottom: 1rem;">Sophisticated AI/ML Models</h4>
+                    <p style="color: var(--text-secondary);">Advanced algorithms processing millions of market data points in real-time, executing trades with precision that surpasses traditional methods.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Services -->
+    <section class="services-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Global Services</h2>
+                <p class="section-subtitle">Comprehensive wealth migration and investment solutions</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🌍</div>
+                    <h3 class="service-title">Citizenship by Investment Services</h3>
+                    <p class="service-description">
+                        Secure second citizenship through strategic investment programs in premier jurisdictions worldwide.
+                    </p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🏛️</div>
+                    <h3 class="service-title">Residency by Investment Programs</h3>
+                    <p class="service-description">
+                        Obtain residency rights in desirable countries through our curated investment opportunities.
+                    </p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">✈️</div>
+                    <h3 class="service-title">Global Mobility Advisory</h3>
+                    <p class="service-description">
+                        Expert guidance on international travel, visa requirements, and mobility optimization strategies.
+                    </p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🎯</div>
+                    <h3 class="service-title">Investment Migration Services</h3>
+                    <p class="service-description">
+                        Comprehensive support for relocating wealth and assets across international boundaries.
+                    </p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">📋</div>
+                    <h3 class="service-title">Second Citizenship Consulting</h3>
+                    <p class="service-description">
+                        Personalized consultation on acquiring additional citizenship for enhanced global freedom.
+                    </p>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🏖️</div>
+                    <h3 class="service-title">Offshore Citizenship Planning</h3>
+                    <p class="service-description">
+                        Strategic planning for offshore citizenship acquisition and wealth preservation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Invitation CTA -->
+    <section class="invitation-section">
+        <div class="section-container">
+            <div class="invitation-card">
+                <h2 class="invitation-title">Invitation Only</h2>
+                <p class="invitation-text">
+                    Our circle remains exclusive by design. We carefully select individuals who share our vision of intelligent wealth building and global perspective. If you believe you align with our values and have the means to participate at our level, we invite you to make contact.
+                </p>
+                <a href="/sync-form" class="exclusive-contact">
+                    <span>Request Invitation</span>
+                    <span>→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Enhanced security measures
+        document.addEventListener('keydown', function(e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+U
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

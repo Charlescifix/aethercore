@@ -34,3 +34,14 @@ async def token_page(request: Request):
     - Investment opportunities
     """
     return templates.TemplateResponse("token.html", {"request": request})
+
+@router.get("/who-we-are", response_class=HTMLResponse)
+async def who_we_are_page(request: Request):
+    """
+    Serves the exclusive 'Who We Are' page with:
+    - Elite group introduction
+    - AI business portfolio
+    - Global services overview
+    - Invitation-only exclusivity
+    """
+    return templates.TemplateResponse("who_we_are.html", {"request": request})
