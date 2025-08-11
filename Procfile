@@ -1,1 +1,1 @@
-web: python start.py
+web: uvicorn main_node:app --host 0.0.0.0 --port $PORT
