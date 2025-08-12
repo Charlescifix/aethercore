@@ -8,17 +8,18 @@
     <style>
         /* Elite color palette and variables */
         :root {
-            --primary-bg: #0a0f1c;
-            --secondary-bg: #1a1f2e;
-            --card-bg: rgba(26, 31, 46, 0.8);
+            --primary-bg: #050505;
+            --secondary-bg: #0A0A0A;
+            --card-bg: #111111;
             --primary-gold: #D4AF37;
-            --secondary-gold: #B8941F;
+            --secondary-gold: #B8960F;
             --accent-gold: #FFE55C;
             --text-primary: #FFFFFF;
-            --text-secondary: #B8C5D6;
+            --text-secondary: #A8A8A8;
             --text-muted: #8A96A8;
             --border-gold: rgba(212, 175, 55, 0.2);
-            --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #FFE55C 50%, #B8941F 100%);
+            --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #D4AF37 100%);
+            --success: #00D46A;
         }
 
         * {
@@ -28,11 +29,13 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--primary-bg);
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+            cursor: default;
         }
 
         /* Background Grid Animation */
@@ -62,11 +65,12 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(10, 15, 28, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             z-index: 1000;
             padding: 1rem 0;
-            border-bottom: 1px solid var(--border-gold);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
         }
 
         .nav-container {
@@ -82,23 +86,31 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary-gold);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary-gold) 0%, #FFD700 50%, var(--primary-gold) 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldShimmer 3s ease infinite;
             text-decoration: none;
         }
 
+        @keyframes goldShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
         .logo-icon {
-            width: 35px;
-            height: 35px;
-            background: var(--gradient-gold);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: var(--primary-bg);
-            font-size: 1.1rem;
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: scale(1.1);
         }
 
         .nav-links {
@@ -477,6 +489,351 @@
             box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
         }
 
+        .consult-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 3rem;
+            background: linear-gradient(135deg, #1a1f2e 0%, #2a2f3e 100%);
+            border: 2px solid var(--primary-gold);
+            color: var(--primary-gold);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .consult-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-gold);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+
+        .consult-button:hover {
+            color: var(--primary-bg);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        }
+
+        .consult-button:hover::before {
+            left: 0;
+        }
+
+
+        /* Trading Terminal Animation */
+        .trading-terminal {
+            background: var(--card-bg);
+            border: 1px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f57; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #28ca42; }
+
+        .terminal-title {
+            color: var(--primary-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .trading-chart {
+            position: relative;
+            height: 200px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4));
+        }
+
+        .chart-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(to right, rgba(212, 175, 55, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(212, 175, 55, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .price-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-gold);
+            animation: priceMove 6s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+        }
+
+        .price-line::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid #D4AF37;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .support-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(40, 202, 66, 0.6);
+            top: 140px;
+        }
+
+        .resistance-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 95, 87, 0.6);
+            top: 80px;
+        }
+
+        .chart-candlesticks {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 160px;
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+        }
+
+        .candlestick {
+            width: 8px;
+            background: linear-gradient(to top, #D4AF37, #FFD700);
+            border-radius: 1px;
+            animation: candleFlicker 3s ease-in-out infinite;
+        }
+
+        .candlestick:nth-child(1) { height: 60px; animation-delay: 0s; }
+        .candlestick:nth-child(2) { height: 80px; animation-delay: 0.2s; }
+        .candlestick:nth-child(3) { height: 45px; animation-delay: 0.4s; }
+        .candlestick:nth-child(4) { height: 90px; animation-delay: 0.6s; }
+        .candlestick:nth-child(5) { height: 70px; animation-delay: 0.8s; }
+        .candlestick:nth-child(6) { height: 100px; animation-delay: 1.0s; }
+        .candlestick:nth-child(7) { height: 55px; animation-delay: 1.2s; }
+        .candlestick:nth-child(8) { height: 85px; animation-delay: 1.4s; }
+
+        @keyframes priceMove {
+            0% { top: 150px; }
+            20% { top: 80px; }
+            40% { top: 120px; }
+            60% { top: 60px; }
+            80% { top: 140px; }
+            100% { top: 150px; }
+        }
+
+        @keyframes candleFlicker {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; transform: scaleY(1.05); }
+        }
+
+        .volume-bars {
+            position: absolute;
+            bottom: 5px;
+            left: 20px;
+            right: 20px;
+            height: 15px;
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+        }
+
+        .volume-bar {
+            width: 6px;
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 1px;
+        }
+
+        .volume-bar:nth-child(1) { height: 8px; }
+        .volume-bar:nth-child(2) { height: 12px; }
+        .volume-bar:nth-child(3) { height: 6px; }
+        .volume-bar:nth-child(4) { height: 15px; }
+        .volume-bar:nth-child(5) { height: 10px; }
+        .volume-bar:nth-child(6) { height: 14px; }
+        .volume-bar:nth-child(7) { height: 7px; }
+        .volume-bar:nth-child(8) { height: 11px; }
+
+        .trading-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.75rem;
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary-gold);
+            margin-bottom: 0.15rem;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trading-activity {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary-gold), transparent);
+            animation: activityPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes activityPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-bg);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 3rem 5%;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .footer-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-logo-icon {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .footer-security {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .footer-section h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-gold);
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .business-grid {
@@ -511,6 +868,20 @@
             .service-card {
                 padding: 2rem;
             }
+
+            /* Ensure trading stats always fit on small screens */
+            .trading-stats {
+                gap: 0.5rem;
+            }
+            .stat-item {
+                padding: 0.6rem;
+            }
+            .stat-value {
+                font-size: 0.95rem;
+            }
+            .stat-label {
+                font-size: 0.68rem;
+            }
         }
     </style>
 </head>
@@ -521,7 +892,7 @@
     <nav class="navigation">
         <div class="nav-container">
             <a href="/" class="logo">
-                <div class="logo-icon">A</div>
+                <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="logo-icon">
                 AEGOCAP
             </a>
             <ul class="nav-links">
@@ -545,9 +916,62 @@
                 We are a small group of wise men who have come together to preserve and expand our wealth through strategic AI innovation, sophisticated trading algorithms, and global investment opportunities.
             </p>
             
-            <!-- Supporting Image -->
+            <!-- Trading Terminal Animation -->
             <div class="hero-image">
-                <img src="data:image/svg+xml,%3Csvg width='600' height='400' viewBox='0 0 600 400' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='600' height='400' fill='%23141828'/%3E%3Cg opacity='0.6'%3E%3Cpath d='M100 200L150 150L200 180L250 120L300 160L350 100L400 140L450 80L500 120' stroke='%23D4AF37' stroke-width='3' fill='none'/%3E%3C/g%3E%3Cg opacity='0.8'%3E%3Ccircle cx='150' cy='150' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='200' cy='180' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='250' cy='120' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='300' cy='160' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='350' cy='100' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='400' cy='140' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='450' cy='80' r='4' fill='%23D4AF37'/%3E%3Ccircle cx='500' cy='120' r='4' fill='%23D4AF37'/%3E%3C/g%3E%3Ctext x='50' y='350' fill='%23B8C5D6' font-family='Inter' font-size='14' opacity='0.7'%3EGlobal AI Trading Performance%3C/text%3E%3Ctext x='450' y='350' fill='%23D4AF37' font-family='Inter' font-size='16' font-weight='600'%3E+247% ROI%3C/text%3E%3C/svg%3E" alt="Elite AI Trading Performance Chart">
+                <div class="trading-terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                        </div>
+                        <div class="terminal-title">AI TRADING TERMINAL</div>
+                    </div>
+                    
+                    <div class="trading-chart">
+                        <div class="chart-grid"></div>
+                        <div class="support-line"></div>
+                        <div class="resistance-line"></div>
+                        <div class="price-line"></div>
+                        <div class="chart-candlesticks">
+                            <div class="candlestick"></div>
+                            <div class="candlestick"></div>
+                            <div class="candlestick"></div>
+                            <div class="candlestick"></div>
+                            <div class="candlestick"></div>
+                            <div class="candlestick"></div>
+                            <div class="candlestick"></div>
+                            <div class="candlestick"></div>
+                        </div>
+                        <div class="volume-bars">
+                            <div class="volume-bar"></div>
+                            <div class="volume-bar"></div>
+                            <div class="volume-bar"></div>
+                            <div class="volume-bar"></div>
+                            <div class="volume-bar"></div>
+                            <div class="volume-bar"></div>
+                            <div class="volume-bar"></div>
+                            <div class="volume-bar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="trading-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">$12.4M</div>
+                            <div class="stat-label">Assets Under Management</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">+247%</div>
+                            <div class="stat-label">YTD Performance</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">0.02s</div>
+                            <div class="stat-label">Execution Speed</div>
+                        </div>
+                    </div>
+                    
+                    <div class="trading-activity"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -673,10 +1097,57 @@
                     <span>Request Invitation</span>
                     <span>→</span>
                 </a>
+                
+                <div style="margin-top: 2rem;">
+                    <a href="#contact" class="consult-button">
+                        <span>Consult Us</span>
+                        <span>💬</span>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo-container">
+                    <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="footer-logo-icon">
+                    <div class="footer-logo">AEGOCAP</div>
+                </div>
+                <p class="footer-desc">
+                    Institutional-grade investment platform powered by artificial intelligence.
+                    Building sovereign wealth for the digital age.
+                </p>
+                <div class="footer-security">
+                    <span>🔒</span>
+                    <span>Bank-Level Security · SOC 2 Compliant</span>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Platform</h4>
+                <ul class="footer-links">
+                    <li><a href="/sync-form">Member Portal</a></li>
+                    <li><a href="/tokens">AEGO Token</a></li>
+                    <li><a href="/academy">Academy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="/privacy">Privacy</a></li>
+                    <li><a href="/terms">Terms</a></li>
+                    <li><a href="/compliance">Compliance</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 AEGOCAP. All rights reserved. | Singapore · Dubai · Zurich
+        </div>
+    </footer>
+
+    
     <script>
         // Enhanced security measures
         document.addEventListener('keydown', function(e) {
@@ -701,6 +1172,7 @@
                 }
             });
         });
+
     </script>
 </body>
 </html>

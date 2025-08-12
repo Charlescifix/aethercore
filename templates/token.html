@@ -379,43 +379,43 @@
 
         .token-info-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1.5rem;
             margin-bottom: 4rem;
         }
 
         .info-card {
             background: var(--card-bg);
             border: 1px solid rgba(212, 175, 55, 0.1);
-            border-radius: 20px;
-            padding: 2.5rem;
+            border-radius: 16px;
+            padding: 1.5rem;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s ease;
+            transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), box-shadow 0.3s ease, border-color 0.3s ease;
         }
 
         .info-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px) scale(1.03);
             border-color: var(--primary-gold);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .info-icon {
-            width: 70px;
-            height: 70px;
+            width: 56px;
+            height: 56px;
             background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
         }
 
         .info-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             color: var(--text-primary);
         }
 
@@ -508,6 +508,12 @@
         }
 
         /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .token-info-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 3rem;

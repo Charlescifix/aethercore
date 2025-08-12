@@ -652,6 +652,274 @@
                 max-width: 300px;
             }
         }
+
+        /* Chatbot Widget Styles */
+        .chatbot-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+        }
+
+        .chatbot-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #B8941F 100%);
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s ease;
+            animation: avatarPulse 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chatbot-avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 2s linear infinite;
+        }
+
+        .avatar-face {
+            font-size: 2rem;
+            position: relative;
+            z-index: 2;
+            animation: blink 4s ease-in-out infinite;
+        }
+
+        @keyframes avatarPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.6); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+
+        .chatbot-avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 15px 45px rgba(212, 175, 55, 0.7);
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 90px;
+            right: 0;
+            width: 400px;
+            height: 600px;
+            background: rgba(10, 15, 28, 0.98);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            transform: translateY(20px) scale(0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .chat-window.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #D4AF37 0%, #FFD700 50%, #B8941F 100%);
+            color: #0A0F1C;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-status {
+            width: 8px;
+            height: 8px;
+            background: #28ca42;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: #0A0F1C;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .chat-close:hover {
+            background: rgba(10, 15, 28, 0.1);
+        }
+
+        .chat-messages {
+            height: 450px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 3px;
+        }
+
+        .chat-message {
+            max-width: 85%;
+            padding: 1rem 1.25rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message.bot {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: #FFFFFF;
+            align-self: flex-start;
+            border-radius: 20px 20px 20px 5px;
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, #1a1f2e, #2a2f3e);
+            color: #FFFFFF;
+            align-self: flex-end;
+            border-radius: 20px 20px 5px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input-area {
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 1.25rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(26, 31, 46, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 25px;
+            padding: 1rem 1.25rem;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chat-input:focus {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .chat-send {
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0A0F1C;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.25rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #D4AF37;
+            border-radius: 50%;
+            animation: typingDot 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingDot {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
@@ -1055,6 +1323,123 @@
             console.log('%cThis console is for authorized personnel only.', 'color: red; font-size: 16px;');
             console.log('%cUnauthorized access will be prosecuted.', 'color: red; font-size: 16px;');
         })();
+
+        // Chatbot functionality
+        let chatOpen = false;
+        
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatOpen = !chatOpen;
+            chatWindow.classList.toggle('active', chatOpen);
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addChatMessage('user', message);
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Simulate AI response delay
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = getAIResponse(message);
+                addChatMessage('bot', response);
+            }, 1500);
+        }
+
+        function addChatMessage(type, text) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type}`;
+            messageDiv.textContent = text;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'flex';
+        }
+
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+
+        function getAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                return '🌟 Welcome to AEGOCAP! I\'m AEGO, your AI investment advisor. I can help you understand our exclusive investment strategies and AI trading systems.';
+            }
+            
+            if (lowerMessage.includes('investment') || lowerMessage.includes('invest')) {
+                return '💰 AEGOCAP utilizes sophisticated AI algorithms that have generated 247% YTD returns. Our strategies include AI trading, digital assets, and global diversification. Would you like to learn about minimum requirements?';
+            }
+            
+            if (lowerMessage.includes('ai') || lowerMessage.includes('trading')) {
+                return '🤖 Our AI systems process millions of data points per second with 0.02s execution speed. We maintain a 50/50 split between AI trading and real-world business investments for optimal risk management.';
+            }
+            
+            if (lowerMessage.includes('minimum') || lowerMessage.includes('requirement')) {
+                return '💎 AEGOCAP is designed for high-net-worth individuals. Investment minimums start at $100K for our entry-level programs. Premium strategies require $1M+. Shall I schedule a consultation?';
+            }
+            
+            if (lowerMessage.includes('token') || lowerMessage.includes('aego')) {
+                return '🪙 The AEGOCAP Token launches December 2025! It\'s pegged to Bitcoin and integrated with Yearn protocols. Early access is available to qualified investors. Want to join the waitlist?';
+            }
+            
+            if (lowerMessage.includes('consultation') || lowerMessage.includes('schedule')) {
+                return '📅 I can connect you with our wealth management team. Please click "Get Started" to begin your application. Our advisors will review your profile within 24 hours.';
+            }
+            
+            return '✨ I\'m here to help you understand AEGOCAP\'s exclusive investment opportunities. Feel free to ask about our AI trading, token launch, or consultation process!';
+        }
+
+        function handleChatEnter(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
     </script>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+        <div class="chatbot-avatar" onclick="toggleChat()">
+            <div class="avatar-face">🤖</div>
+        </div>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <div class="chat-status"></div>
+                    <div>AEGO AI Assistant</div>
+                </div>
+                <button class="chat-close" onclick="toggleChat()">×</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot">
+                    🌟 Hello! I'm AEGO, your AI investment advisor. I can help you explore AEGOCAP's exclusive opportunities. What would you like to know?
+                </div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">
+                <span>AEGO is typing</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask about our AI investment strategies..." onkeypress="handleChatEnter(event)">
+                <button class="chat-send" onclick="sendChatMessage()">➤</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
