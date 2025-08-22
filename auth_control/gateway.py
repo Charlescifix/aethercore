@@ -14,7 +14,7 @@ import os
 from data_layer.init_db import get_db
 from data_layer.gateway_model import SecureUser, get_or_create_user_flag
 from monitor_unit.audit_log import log_event
-from monitor_unit.anomaly_guard import is_rate_limited
+from monitor_unit.persistent_rate_limiter import is_rate_limited
 from auth_control.otp_module import verify_otp, generate_otp_secret, get_otp_uri
 import pyotp
 import qrcode
@@ -34,7 +34,7 @@ signer = TimestampSigner(os.getenv("SESSION_SECRET"))
 serializer = URLSafeTimedSerializer(os.getenv("RESET_SECRET"))
 
 print("[GATEWAY INIT] Authentication module loaded")
-print(f"[GATEWAY INIT] Using session secret: {'*' * 10}{os.getenv('SESSION_SECRET', 'default')[-4:]}")
+print("[GATEWAY INIT] Session secret configured")
 
 
 # ─────────────────────────────────────────
@@ -59,16 +59,16 @@ async def register_process(
     # Check rate limiting
     ip = request.client.host
     if is_rate_limited(ip, endpoint="register", limit=3, window=3600):
-        print(f"[REGISTER] ❌ Rate limited for IP: {ip}")
+        print(f"[REGISTER] ERROR: Rate limited")
         raise HTTPException(status_code=429, detail="Too many registration attempts")
 
     # Validate passwords
     if password != confirm_password:
-        print(f"[REGISTER] ❌ Passwords don't match")
+        print(f"[REGISTER] ERROR: Passwords don't match")
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
     if len(password) < 8 or not any(c.isdigit() for c in password):
-        print(f"[REGISTER] ❌ Weak password - length: {len(password)}, has digit: {any(c.isdigit() for c in password)}")
+        print(f"[REGISTER] ERROR: Weak password - length: {len(password)}, has digit: {any(c.isdigit() for c in password)}")
         raise HTTPException(status_code=400, detail="Weak password")
 
     # Check existing user
@@ -84,15 +84,15 @@ async def register_process(
         age = (datetime.now() - dob_date).days / 365.25
         print(f"[REGISTER] User age: {age:.1f} years")
         if age < 18:
-            print(f"[REGISTER] ❌ User under 18")
+            print(f"[REGISTER] ERROR: User under 18")
             raise HTTPException(status_code=400, detail="Must be 18 or older")
     except ValueError:
-        print(f"[REGISTER] ❌ Invalid DOB format: {dob}")
+        print(f"[REGISTER] ERROR: Invalid DOB format: {dob}")
         raise HTTPException(status_code=400, detail="DOB format must be YYYY-MM-DD")
 
     # Generate OTP secret
     otp_secret = generate_otp_secret()
-    print(f"[REGISTER] Generated OTP secret: {'*' * 10}{otp_secret[-4:]}")
+    print(f"[REGISTER] Generated OTP secret successfully")
 
     # Hash password
     hashed_pw = pwd_context.hash(password)
@@ -123,7 +123,7 @@ async def register_process(
 
     log_event(email, "Account registered - pending OTP setup")
 
-    print(f"[REGISTER] ✅ Registration successful, redirecting to OTP setup")
+    print(f"[REGISTER] SUCCESS: Registration successful, redirecting to OTP setup")
     return RedirectResponse("/otp-setup", status_code=303)
 
 
@@ -145,7 +145,7 @@ async def otp_setup_page(
     print(f"[OTP SETUP] Has session token: {bool(otp_token)}")
 
     if not otp_token:
-        print(f"[OTP SETUP] ❌ No setup session, redirecting to register")
+        print(f"[OTP SETUP] ERROR: No setup session, redirecting to register")
         return RedirectResponse("/seed-link", status_code=303)
 
     try:
@@ -153,16 +153,16 @@ async def otp_setup_page(
         print(f"[OTP SETUP] Token payload: {payload[:20]}...")
 
         if not payload.startswith("otp_setup:"):
-            print(f"[OTP SETUP] ❌ Invalid token format")
+            print(f"[OTP SETUP] ERROR: Invalid token format")
             raise HTTPException(status_code=403, detail="Invalid setup token")
 
         email = payload.split("otp_setup:")[1]
         print(f"[OTP SETUP] Email from token: {email}")
     except SignatureExpired:
-        print(f"[OTP SETUP] ❌ Token expired")
+        print(f"[OTP SETUP] ERROR: Token expired")
         return RedirectResponse("/seed-link?error=session_expired", status_code=303)
     except Exception as e:
-        print(f"[OTP SETUP] ❌ Token error: {str(e)}")
+        print(f"[OTP SETUP] ERROR: Token error: {str(e)}")
         return RedirectResponse("/seed-link", status_code=303)
 
     # Get user
@@ -171,10 +171,10 @@ async def otp_setup_page(
     user = result.scalar_one_or_none()
 
     if not user:
-        print(f"[OTP SETUP] ❌ User not found: {email}")
+        print(f"[OTP SETUP] ERROR: User not found: {email}")
         return RedirectResponse("/seed-link", status_code=303)
 
-    print(f"[OTP SETUP] ✅ User found")
+    print(f"[OTP SETUP] SUCCESS: User found")
 
     # Generate provisioning URI and QR
     totp = pyotp.TOTP(user.otp_secret)
@@ -188,9 +188,9 @@ async def otp_setup_page(
         qr.save(buf, format="PNG")
         qr_data = base64.b64encode(buf.getvalue()).decode("utf-8")
         qr_img = f"data:image/png;base64,{qr_data}"
-        print(f"[OTP SETUP] ✅ QR code generated successfully")
+        print(f"[OTP SETUP] SUCCESS: QR code generated successfully")
     except Exception as e:
-        print(f"[OTP SETUP] ❌ QR generation error: {str(e)}")
+        print(f"[OTP SETUP] ERROR: QR generation error: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to generate QR code")
 
     return templates.TemplateResponse("otp_qr.html", {
@@ -218,7 +218,7 @@ async def verify_otp_setup(
     # Check for OTP setup session
     otp_token = request.session.get("otp_setup")
     if not otp_token:
-        print(f"[OTP VERIFY] ❌ No setup session")
+        print(f"[OTP VERIFY] ERROR: No setup session")
         raise HTTPException(status_code=403, detail="Setup session expired")
 
     try:
@@ -226,7 +226,7 @@ async def verify_otp_setup(
         email = payload.split("otp_setup:")[1]
         print(f"[OTP VERIFY] Email from session: {email}")
     except Exception as e:
-        print(f"[OTP VERIFY] ❌ Session token error: {str(e)}")
+        print(f"[OTP VERIFY] ERROR: Session token error: {str(e)}")
         raise HTTPException(status_code=403, detail="Invalid setup token")
 
     # Get user and verify OTP
@@ -235,23 +235,27 @@ async def verify_otp_setup(
     user = result.scalar_one_or_none()
 
     if not user:
-        print(f"[OTP VERIFY] ❌ User not found")
+        print(f"[OTP VERIFY] ERROR: User not found")
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Clean the OTP input
-    clean_otp = ''.join(filter(str.isdigit, otp_code.strip()))
+    # Validate OTP format
+    import re
+    if not re.match(r'^\d{6}$', otp_code.strip()):
+        print(f"[OTP VERIFY] ERROR: Invalid OTP format")
+        return RedirectResponse("/otp-setup?error=invalid_format", status_code=303)
+    clean_otp = otp_code.strip()
     print(f"[OTP VERIFY] Cleaned OTP: '{clean_otp}'")
 
     # Verify OTP
     print(f"[OTP VERIFY] Verifying OTP...")
     if not verify_otp(user.otp_secret, clean_otp):
-        print(f"[OTP VERIFY] ❌ Invalid OTP code")
+        print(f"[OTP VERIFY] ERROR: Invalid OTP code")
         # Get expected OTP for debug
         totp = pyotp.TOTP(user.otp_secret)
-        print(f"[OTP VERIFY] Expected: {totp.now()}, Got: {clean_otp}")
+        print(f"[OTP VERIFY] OTP verification failed - timing mismatch")
         return RedirectResponse("/otp-setup?error=invalid_code", status_code=303)
 
-    print(f"[OTP VERIFY] ✅ OTP verified successfully")
+    print(f"[OTP VERIFY] SUCCESS: OTP verified successfully")
 
     # Clear setup session
     request.session.pop("otp_setup", None)
@@ -293,7 +297,7 @@ async def login_process(
         # Check rate limiting
         ip = request.client.host
         if is_rate_limited(ip, endpoint="login"):
-            print(f"[LOGIN] ❌ Rate limited for IP: {ip}")
+            print(f"[LOGIN] ERROR: Rate limited")
             return RedirectResponse("/sync-form?error=rate_limited", status_code=303)
 
         # Find user
@@ -302,11 +306,11 @@ async def login_process(
         user = query.scalar_one_or_none()
 
         if not user:
-            print(f"[LOGIN] ❌ User not found: {email}")
+            print(f"[LOGIN] ERROR: User not found: {email}")
             log_event(email, "Login failed - user not found")
             return RedirectResponse("/sync-form?error=auth_failed", status_code=303)
 
-        print(f"[LOGIN] ✅ User found")
+        print(f"[LOGIN] SUCCESS: User found")
 
         # Verify password
         print(f"[LOGIN] Verifying password...")
@@ -314,20 +318,24 @@ async def login_process(
         print(f"[LOGIN] Password valid: {password_valid}")
 
         if not password_valid:
-            print(f"[LOGIN] ❌ Password verification failed")
+            print(f"[LOGIN] ERROR: Password verification failed")
             log_event(email, "Login failed - wrong password")
             return RedirectResponse("/sync-form?error=auth_failed", status_code=303)
 
-        print(f"[LOGIN] ✅ Password correct")
+        print(f"[LOGIN] SUCCESS: Password correct")
 
-        # Clean and verify OTP
-        clean_otp = ''.join(filter(str.isdigit, otp.strip()))
+        # Validate OTP format
+        import re
+        if not re.match(r'^\d{6}$', otp.strip()):
+            print(f"[LOGIN] ERROR: Invalid OTP format")
+            return RedirectResponse("/sync-form?error=invalid_otp", status_code=303)
+        clean_otp = otp.strip()
         print(f"[LOGIN] Cleaned OTP: '{clean_otp}'")
 
         # Get current expected OTP for debug
         totp = pyotp.TOTP(user.otp_secret)
         expected_otp = totp.now()
-        print(f"[LOGIN] Expected OTP: {expected_otp}")
+        print(f"[LOGIN] Verifying OTP timing")
 
         # Verify OTP
         print(f"[LOGIN] Verifying OTP...")
@@ -335,24 +343,24 @@ async def login_process(
         print(f"[LOGIN] OTP valid: {otp_valid}")
 
         if not otp_valid:
-            print(f"[LOGIN] ❌ OTP verification failed")
-            print(f"[LOGIN] Expected: {expected_otp}, Got: {clean_otp}")
+            print(f"[LOGIN] ERROR: OTP verification failed")
+            print(f"[LOGIN] OTP verification failed - timing mismatch")
 
             # Check time windows for debugging
             print(f"[LOGIN] Checking time windows:")
             for i in range(-2, 3):
                 window_otp = totp.at(datetime.now().timestamp() + (i * 30))
-                match = "✓" if window_otp == clean_otp else "✗"
-                print(f"[LOGIN]   Window {i:+d} ({i * 30:+3d}s): {window_otp} {match}")
+                match = "MATCH" if window_otp == clean_otp else "NO_MATCH"
+                print(f"[LOGIN]   Checking window {i:+d}")
 
             log_event(email, "Login failed - invalid OTP")
             return RedirectResponse("/sync-form?error=invalid_otp", status_code=303)
 
         # Login successful
-        print(f"[LOGIN] ✅ All checks passed - creating session")
+        print(f"[LOGIN] SUCCESS: All checks passed - creating session")
         token = signer.sign(email).decode()
         request.session["user"] = token
-        print(f"[LOGIN] Session created with token: {'*' * 20}{token[-10:]}")
+        print(f"[LOGIN] Session created successfully")
 
         # Check onboarding status
         print(f"[LOGIN] Checking onboarding status...")
@@ -369,19 +377,19 @@ async def login_process(
         if (user_flag.current_step == OnboardingStep.DEPOSIT_CONFIRMED and 
             user_flag.verification_status == VerificationStatus.VERIFIED):
             # User is fully verified - go directly to dashboard
-            print(f"[LOGIN] ✅ Verified user - redirecting to dashboard")
+            print(f"[LOGIN] SUCCESS: Verified user - redirecting to dashboard")
             return RedirectResponse("/vision-frame", status_code=303)
         elif user_flag.current_step == OnboardingStep.NONE:
             # New user - start onboarding
-            print(f"[LOGIN] ✅ New user - redirecting to onboarding")
+            print(f"[LOGIN] SUCCESS: New user - redirecting to onboarding")
             return RedirectResponse("/structure-glimpse", status_code=303)
         else:
             # User in middle of onboarding or pending verification
-            print(f"[LOGIN] ✅ User in onboarding process - redirecting to dashboard for status check")
+            print(f"[LOGIN] SUCCESS: User in onboarding process - redirecting to dashboard for status check")
             return RedirectResponse("/vision-frame", status_code=303)
 
     except Exception as e:
-        print(f"[LOGIN] ❌ Unexpected error: {str(e)}")
+        print(f"[LOGIN] ERROR: Unexpected error: {str(e)}")
         import traceback
         traceback.print_exc()
         log_event(email, f"Login error: {str(e)}")
@@ -397,7 +405,7 @@ async def logout_handler(request: Request):
     print(f"[LOGOUT] Had session: {bool(request.session.get('user'))}")
 
     request.session.clear()
-    print(f"[LOGOUT] ✅ Session cleared")
+    print(f"[LOGOUT] SUCCESS: Session cleared")
 
     return RedirectResponse("/", status_code=302)
 
@@ -424,7 +432,7 @@ async def send_reset_link(
     if not user:
         print(f"[RESET] User not found: {email}")
     else:
-        print(f"[RESET] ✅ User found, generating token")
+        print(f"[RESET] SUCCESS: User found, generating token")
         token = serializer.dumps(email)
         reset_url = f"/reset-link?token={token}"
         print(f"[RESET] Reset URL: {reset_url}")
@@ -443,12 +451,12 @@ async def show_reset_form(request: Request, token: str = Query(...)):
 
     try:
         email = serializer.loads(token, max_age=3600)
-        print(f"[RESET] ✅ Valid token for: {email}")
+        print(f"[RESET] SUCCESS: Valid token for: {email}")
     except SignatureExpired:
-        print(f"[RESET] ❌ Token expired")
+        print(f"[RESET] ERROR: Token expired")
         return RedirectResponse("/sync-form?error=token_expired", status_code=303)
     except Exception as e:
-        print(f"[RESET] ❌ Invalid token: {str(e)}")
+        print(f"[RESET] ERROR: Invalid token: {str(e)}")
         return RedirectResponse("/sync-form", status_code=303)
 
     return templates.TemplateResponse("reset_password.html", {
@@ -473,16 +481,16 @@ async def handle_reset_form(
         email = serializer.loads(token, max_age=3600)
         print(f"[RESET] Token valid for: {email}")
     except Exception as e:
-        print(f"[RESET] ❌ Token error: {str(e)}")
+        print(f"[RESET] ERROR: Token error: {str(e)}")
         raise HTTPException(status_code=403, detail="Invalid or expired reset token")
 
     # Validate passwords
     if new_password != confirm_password:
-        print(f"[RESET] ❌ Passwords don't match")
+        print(f"[RESET] ERROR: Passwords don't match")
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
     if len(new_password) < 8:
-        print(f"[RESET] ❌ Password too short: {len(new_password)}")
+        print(f"[RESET] ERROR: Password too short: {len(new_password)}")
         raise HTTPException(status_code=400, detail="Password validation failed")
 
     # Find user
@@ -491,7 +499,7 @@ async def handle_reset_form(
     user = result.scalar_one_or_none()
 
     if not user:
-        print(f"[RESET] ❌ User not found")
+        print(f"[RESET] ERROR: User not found")
         raise HTTPException(status_code=404, detail="User not found")
 
     # Update password
@@ -499,7 +507,7 @@ async def handle_reset_form(
     user.hashed_pw = pwd_context.hash(new_password)
     await db.commit()
 
-    print(f"[RESET] ✅ Password updated successfully")
+    print(f"[RESET] SUCCESS: Password updated successfully")
     log_event(email, "Password reset completed")
 
     return RedirectResponse("/pulse-confirm", status_code=303)

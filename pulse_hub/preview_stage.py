@@ -332,7 +332,7 @@ async def handle_deposit_submission(
         return RedirectResponse("/confirm-deposit?error=duplicate_tx", status_code=303)
 
     # 2. Rate limiting check
-    from monitor_unit.anomaly_guard import is_rate_limited
+    from monitor_unit.persistent_rate_limiter import is_rate_limited
     if is_rate_limited(request.client.host, endpoint="deposit", limit=3, window=3600):
         print(f"[DEPOSIT] ❌ Rate limited")
         log_event(email, "Rate limited on deposit submission")

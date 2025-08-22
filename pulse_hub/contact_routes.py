@@ -11,7 +11,7 @@ import re
 
 from data_layer.init_db import get_db
 from monitor_unit.audit_log import log_event
-from monitor_unit.anomaly_guard import is_rate_limited
+from monitor_unit.persistent_rate_limiter import is_rate_limited
 from middleware_layer.csrf_protection import get_csrf_token
 
 templates = Jinja2Templates(directory="templates")
