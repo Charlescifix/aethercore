@@ -45,3 +45,10 @@ async def who_we_are_page(request: Request):
     - Invitation-only exclusivity
     """
     return templates.TemplateResponse("who_we_are.html", {"request": request})
+
+@router.get("/telegram-trader")
+async def telegram_trader_redirect():
+    """
+    Redirects to the Telegram trader external application
+    """
+    return RedirectResponse(url="https://aegoland-production.up.railway.app", status_code=302)

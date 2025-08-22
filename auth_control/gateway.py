@@ -4,7 +4,7 @@ from fastapi import (
 from fastapi.responses import JSONResponse, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from passlib.context import CryptContext
-from pydantic import EmailStr
+from pydantic import EmailStr, ValidationError
 from itsdangerous import TimestampSigner, URLSafeTimedSerializer, BadSignature, SignatureExpired
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -75,7 +75,7 @@ async def register_process(
     print(f"[REGISTER] Checking if user exists...")
     existing = await db.execute(select(SecureUser).where(SecureUser.email == email))
     if existing.scalar_one_or_none():
-        print(f"[REGISTER] ❌ User already exists: {email}")
+        print(f"[REGISTER] User already exists: {email}")
         raise HTTPException(status_code=409, detail="Account already exists")
 
     # Validate DOB
@@ -110,9 +110,9 @@ async def register_process(
     try:
         db.add(new_user)
         await db.commit()
-        print(f"[REGISTER] ✅ User created in database")
+        print(f"[REGISTER] User created in database successfully")
     except Exception as e:
-        print(f"[REGISTER] ❌ Database error: {str(e)}")
+        print(f"[REGISTER] Database error: {str(e)}")
         await db.rollback()
         raise HTTPException(status_code=500, detail="Registration failed")
 

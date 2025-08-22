@@ -65,6 +65,7 @@ async def agreement_step(
         request: Request,
         agree_1: str = Form(None),
         agree_2: str = Form(None),
+        csrf_token: str = Form(...),
         email: str = Depends(verify_session),
         db: AsyncSession = Depends(get_db)
 ):
@@ -122,6 +123,7 @@ async def submit_plan(
         amount_range: str = Form(...),
         return_rate: str = Form(...),
         duration: str = Form(...),
+        csrf_token: str = Form(...),
         email: str = Depends(verify_session),
         db: AsyncSession = Depends(get_db)
 ):
@@ -248,6 +250,7 @@ async def confirm_deposit_form(
 @router.post("/confirm-deposit")
 async def handle_deposit_submission(
         request: Request,
+        csrf_token: str = Form(...),
         email: str = Depends(verify_session),
         db: AsyncSession = Depends(get_db)
 ):

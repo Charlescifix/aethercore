@@ -18,13 +18,24 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 print("[ADMIN] Admin control module loaded")
 
-# Simple admin authentication check
+# Secure admin authentication check
 async def verify_admin_session(request: Request):
-    """Verify admin is logged in"""
+    """Verify admin is logged in with signature validation"""
+    from itsdangerous import TimestampSigner, BadSignature, SignatureExpired
+    import os
+    
     admin_token = request.session.get("admin_user")
     if not admin_token:
         raise HTTPException(status_code=401, detail="Admin not authenticated")
-    return admin_token
+    
+    # Verify signed session token
+    signer = TimestampSigner(os.getenv("SESSION_SECRET"))
+    try:
+        verified_admin = signer.unsign(admin_token, max_age=3600).decode()
+        return verified_admin
+    except (BadSignature, SignatureExpired):
+        request.session.clear()
+        raise HTTPException(status_code=401, detail="Invalid admin session")
 
 # ─────────────────────────────────────────
 # ADMIN LOGIN
@@ -61,8 +72,11 @@ async def admin_login_process(
         log_event("admin", "Failed admin login attempt")
         return RedirectResponse("/admin/login?error=invalid_credentials", status_code=303)
     
-    # Set admin session
-    request.session["admin_user"] = admin_username
+    # Set signed admin session
+    from itsdangerous import TimestampSigner
+    signer = TimestampSigner(os.getenv("SESSION_SECRET"))
+    signed_token = signer.sign(admin_username).decode()
+    request.session["admin_user"] = signed_token
     print(f"[ADMIN] ✅ Login successful")
     log_event("admin", "Admin logged in")
     

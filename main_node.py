@@ -17,11 +17,13 @@ load_dotenv()
 from pulse_hub.routes_landing import router as landing_router
 from pulse_hub.preview_stage import router as preview_router
 from pulse_hub.routes_dashboard import router as dashboard_router
+from pulse_hub.contact_routes import router as contact_router
 from auth_control.gateway import router as auth_router
 from auth_control.admin_control import router as admin_router
 
 # Middleware
-from middleware_layer import security_headers
+import middleware_layer
+from middleware_layer.csrf_protection import csrf_middleware
 
 # DB init
 from data_layer.init_db import init_models
@@ -68,7 +70,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.middleware("http")(security_headers)
+app.middleware("http")(middleware_layer.security_headers)
+app.middleware("http")(csrf_middleware)
 
 app.add_middleware(
     SessionMiddleware,
@@ -86,6 +89,7 @@ templates = Jinja2Templates(directory="templates")
 app.include_router(landing_router)
 app.include_router(preview_router)
 app.include_router(dashboard_router)
+app.include_router(contact_router)
 app.include_router(auth_router)
 app.include_router(admin_router)
 
