@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AEGOCAP Academy | Master AI Trading & Financial Technology</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob:;">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8960F;
+            --dark-bg: #050505;
+            --secondary-bg: #0A0A0A;
+            --card-bg: #111111;
+            --accent: #1a1a1a;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A8A8A8;
+            --success: #00D46A;
+            --danger: #FF3737;
+        }
+
+        html, body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            cursor: default;
+        }
+
+        /* Security Layer */
+        .quantum-shield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(212, 175, 55, 0.01) 2px,
+                rgba(212, 175, 55, 0.01) 4px
+            );
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            background: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 9999;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary-gold) 0%, #FFD700 50%, var(--primary-gold) 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldShimmer 3s ease infinite;
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link.active {
+            color: var(--primary-gold);
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 1px;
+            background: var(--primary-gold);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-gold);
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: 0.02em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn-login {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn-login:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn-member {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            color: var(--dark-bg);
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .nav-btn-member:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+            background: radial-gradient(ellipse at top, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--primary-gold);
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            animation: securityPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes securityPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+        }
+
+        .security-icon {
+            width: 12px;
+            height: 12px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.6;
+            font-weight: 400;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-highlight {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* Academy Section */
+        .academy-section {
+            padding: 6rem 5%;
+            background: var(--secondary-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .academy-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background: repeating-linear-gradient(
+                45deg,
+                var(--primary-gold),
+                var(--primary-gold) 1px,
+                transparent 1px,
+                transparent 40px
+            );
+        }
+
+        .academy-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .academy-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .service-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .service-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-gold);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 100px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .service-action:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateX(5px);
+        }
+
+        /* Trainers Section */
+        .trainers-section {
+            padding: 6rem 5%;
+            background: linear-gradient(180deg, var(--secondary-bg) 0%, var(--dark-bg) 100%);
+        }
+
+        .trainers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .trainer-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .trainer-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+        }
+
+        .trainer-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .trainer-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .trainer-role {
+            color: var(--primary-gold);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .trainer-bio {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 3rem 5%;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .footer-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-logo-icon {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-gold), #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-desc {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .footer-security {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .footer-section h4 {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-gold);
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trainers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+    <div class="quantum-shield"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo-container">
+                <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="logo-icon">
+                <div class="logo">AEGOCAP</div>
+            </div>
+            <div class="nav-center">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/who-we-are" class="nav-link">Who We Are</a>
+                <a href="/tokens" class="nav-link">Tokens</a>
+                <a href="/academy" class="nav-link active">Academy</a>
+                <a href="/contact" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn nav-btn-login" onclick="window.location.href='/sync-form'">
+                    LOG IN
+                </button>
+                <button class="nav-btn nav-btn-member" onclick="window.location.href='/seed-link'">
+                    NEW MEMBER
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-content">
+            <div class="security-badge">
+                <div class="security-icon"></div>
+                INSTITUTIONAL-GRADE EDUCATION
+            </div>
+            <h1>AEGOCAP Academy</h1>
+            <p class="hero-subtitle">
+                Master the convergence of <span class="hero-highlight">Artificial Intelligence</span> and 
+                <span class="hero-highlight">Financial Markets</span>.<br>
+                Learn from industry experts with deep backgrounds in finance, software engineering, and machine learning.
+            </p>
+        </div>
+    </section>
+
+    <!-- Academy Main Section -->
+    <section class="academy-section">
+        <div class="academy-bg"></div>
+        <div class="academy-container">
+            <div class="section-header">
+                <h2 class="section-title">Elite Financial Technology Education</h2>
+                <p class="section-subtitle">Comprehensive training programs designed for the next generation of AI-powered finance professionals</p>
+            </div>
+            
+            <div class="academy-intro">
+                <p>
+                    At AEGOCAP Academy, we bridge the gap between cutting-edge AI technology and sophisticated financial markets. 
+                    Our curriculum combines theoretical foundations with practical, hands-on experience in building and deploying 
+                    AI-powered trading systems. Whether you're looking to <strong>build technologies for trading</strong>, 
+                    <strong>use the latest technology for trading</strong>, or <strong>master other advanced aspects of algorithmic finance</strong>, 
+                    our expert trainers will guide you through every step of your journey.
+                </p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3 class="service-title">AI Trading Mastery</h3>
+                    <p class="service-description">
+                        Master the art of algorithmic trading with neural networks, deep learning models, and quantum computing applications. 
+                        Learn to build sophisticated AI systems that analyze millions of data points per second and execute trades with precision.
+                    </p>
+                    <a href="/academy/ai-trading" class="service-action">
+                        Start Learning
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🧮</div>
+                    <h3 class="service-title">Financial Datasets & Machine Learning</h3>
+                    <p class="service-description">
+                        Work with institutional-grade financial datasets and build machine learning models for market prediction, 
+                        risk assessment, and portfolio optimization. Access real-world data used by hedge funds and investment banks.
+                    </p>
+                    <a href="/academy/datasets" class="service-action">
+                        Access Datasets
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">⚙️</div>
+                    <h3 class="service-title">Trading Framework Development</h3>
+                    <p class="service-description">
+                        Build robust, scalable trading frameworks and modules using professional software engineering practices. 
+                        Create automated systems that can handle high-frequency trading and complex multi-asset strategies.
+                    </p>
+                    <a href="/academy/frameworks" class="service-action">
+                        View Modules
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🚀</div>
+                    <h3 class="service-title">Quantitative Finance & Risk Management</h3>
+                    <p class="service-description">
+                        Deep dive into mathematical models, derivatives pricing, and advanced risk management techniques. 
+                        Learn how to implement Black-Scholes models, Monte Carlo simulations, and modern portfolio theory.
+                    </p>
+                    <a href="/academy/quant-finance" class="service-action">
+                        Explore Quant
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">⚡</div>
+                    <h3 class="service-title">Real-Time Data Processing</h3>
+                    <p class="service-description">
+                        Master high-performance data processing, stream processing, and real-time analytics for financial markets. 
+                        Build systems that can handle millions of market updates per second with microsecond latency.
+                    </p>
+                    <a href="/academy/data-processing" class="service-action">
+                        Process Data
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🔐</div>
+                    <h3 class="service-title">Blockchain & DeFi Integration</h3>
+                    <p class="service-description">
+                        Learn to integrate traditional finance with decentralized finance (DeFi) protocols. 
+                        Build cross-chain trading strategies and implement smart contracts for automated portfolio management.
+                    </p>
+                    <a href="/academy/defi" class="service-action">
+                        Enter DeFi
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expert Trainers Section -->
+    <section class="trainers-section">
+        <div class="academy-container">
+            <div class="section-header">
+                <h2 class="section-title">Expert Trainers</h2>
+                <p class="section-subtitle">Learn from industry leaders who combine deep financial expertise with cutting-edge technology skills</p>
+            </div>
+            
+            <div class="trainers-grid">
+                <div class="trainer-card">
+                    <div class="trainer-avatar">👨‍💼</div>
+                    <h3 class="trainer-name">Dr. Marcus Chen</h3>
+                    <p class="trainer-role">Quantitative Finance & AI Director</p>
+                    <p class="trainer-bio">
+                        Former Goldman Sachs VP with 15 years in algorithmic trading. PhD in Machine Learning from MIT. 
+                        Specializes in neural network trading models and high-frequency execution systems.
+                    </p>
+                </div>
+
+                <div class="trainer-card">
+                    <div class="trainer-avatar">👩‍💻</div>
+                    <h3 class="trainer-name">Sarah Williams</h3>
+                    <p class="trainer-role">Software Architecture & Trading Systems</p>
+                    <p class="trainer-bio">
+                        Ex-Two Sigma senior engineer with expertise in distributed systems and low-latency trading infrastructure. 
+                        Master's in Computer Science from Stanford, specializing in financial software architecture.
+                    </p>
+                </div>
+
+                <div class="trainer-card">
+                    <div class="trainer-avatar">👨‍🔬</div>
+                    <h3 class="trainer-name">Prof. James Rodriguez</h3>
+                    <p class="trainer-role">Machine Learning & Risk Management</p>
+                    <p class="trainer-bio">
+                        Former head of ML at Citadel Securities. Published researcher in financial machine learning with 50+ papers. 
+                        Expert in reinforcement learning for trading and advanced risk modeling techniques.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo-container">
+                    <img src="/static/aegocap-logo.png" alt="AEGOCAP Logo" class="footer-logo-icon">
+                    <div class="footer-logo">AEGOCAP</div>
+                </div>
+                <p class="footer-desc">
+                    Elite academy for AI-powered financial technology education. 
+                    Training the next generation of quantitative finance professionals.
+                </p>
+                <div class="footer-security">
+                    <span>🎓</span>
+                    <span>Accredited Education · Industry Certified</span>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Academy</h4>
+                <ul class="footer-links">
+                    <li><a href="/academy/ai-trading">AI Trading</a></li>
+                    <li><a href="/academy/datasets">Datasets</a></li>
+                    <li><a href="/academy/frameworks">Frameworks</a></li>
+                    <li><a href="/academy/admissions">Admissions</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="/academy/help">Help Center</a></li>
+                    <li><a href="/academy/career">Career Services</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 AEGOCAP Academy. All rights reserved. | Elite Financial Technology Education
+        </div>
+    </footer>
+
+    <script>
+        // Advanced Security Implementation (similar to home page)
+        (function() {
+            'use strict';
+
+            // Disable developer tools
+            const devtools = {open: false, orientation: null};
+            const threshold = 160;
+            const emitEvent = (state) => {
+                if (state) {
+                    document.body.style.display = 'none';
+                    window.location.href = '/security-breach';
+                }
+            };
+
+            setInterval(() => {
+                if (window.outerHeight - window.innerHeight > threshold ||
+                    window.outerWidth - window.innerWidth > threshold) {
+                    if (!devtools.open) {
+                        emitEvent(true);
+                        devtools.open = true;
+                    }
+                } else {
+                    if (devtools.open) {
+                        emitEvent(false);
+                        devtools.open = false;
+                    }
+                }
+            }, 500);
+
+            // Keyboard shortcuts protection
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123 ||
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Parallax effect on scroll
+            let ticking = false;
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelector('.hero-grid');
+                if (parallax) {
+                    parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+                }
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            });
+
+            console.clear();
+            console.log('%cAEGOCAP ACADEMY', 'color: #D4AF37; font-size: 24px; font-weight: bold;');
+            console.log('%cUnauthorized access is prohibited.', 'color: red; font-size: 16px;');
+        })();
+    </script>
+</body>
+</html>

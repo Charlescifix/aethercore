@@ -46,6 +46,17 @@ async def who_we_are_page(request: Request):
     """
     return templates.TemplateResponse("who_we_are.html", {"request": request})
 
+@router.get("/academy", response_class=HTMLResponse)
+async def academy_page(request: Request):
+    """
+    Serves the AEGOCAP Academy page with:
+    - AI Trading education programs
+    - Financial ML courses
+    - Expert trainers with financial and software engineering backgrounds
+    - Comprehensive curriculum for AI and trading convergence
+    """
+    return templates.TemplateResponse("academy.html", {"request": request})
+
 @router.get("/telegram-trader")
 async def telegram_trader_redirect():
     """
